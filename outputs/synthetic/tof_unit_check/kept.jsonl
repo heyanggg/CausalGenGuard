@@ -1,0 +1,1 @@
+{"sequence_id": "ok", "events": [{"timestamp": null, "day": 0, "hour": 0, "device_id": "d", "control_id": "on", "duration": null, "raw_fields": {}}, {"timestamp": null, "day": 0, "hour": 1, "device_id": "d", "control_id": "off", "duration": null, "raw_fields": {}}], "context": {}, "label": null, "anomaly_type": null}

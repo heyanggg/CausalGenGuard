@@ -1,0 +1,215 @@
+{
+  "sequence_id": "smartguard_fr_train_000027",
+  "label": null,
+  "anomaly_type": null,
+  "prediction": 1,
+  "scores": {
+    "score": 2.295578324794769,
+    "reconstruction_score": 3.531984329223633,
+    "causal_score": 0.440969318151474,
+    "context_score": 0.0,
+    "z_reconstruction": 3.531984329223633,
+    "z_causal": 0.440969318151474,
+    "z_context": 0.0,
+    "threshold": 0.5
+  },
+  "context": {
+    "source_project": "SmartGuard",
+    "source_format": "10x4",
+    "field_order": [
+      "day",
+      "hour",
+      "persistence_or_device",
+      "control"
+    ],
+    "dataset": "fr",
+    "split": "train",
+    "source_path": "/home/heyang/projects/SmartGuard/data/fr_data/fr_trn_instance_10.pkl",
+    "sample_index": 27
+  },
+  "context_graph_id": "global",
+  "sequence_summary": {
+    "event_count": 10,
+    "first_timestamp": null,
+    "last_timestamp": null,
+    "unique_controls": [
+      "155",
+      "156",
+      "216",
+      "27",
+      "34",
+      "56",
+      "57",
+      "84",
+      "91"
+    ],
+    "unique_devices": []
+  },
+  "top_abnormal_tokens": [
+    {
+      "rank": 1,
+      "position": 7,
+      "control_id": 216,
+      "device_id": null,
+      "timestamp": null,
+      "day": 6,
+      "hour": 7,
+      "duration": 31,
+      "reconstruction_loss": 4.836544990539551,
+      "raw_fields": {
+        "position": 7,
+        "day": 6,
+        "hour": 7,
+        "persistence_or_device": 31,
+        "control": 216,
+        "source_format": "smartguard_10x4"
+      }
+    },
+    {
+      "rank": 2,
+      "position": 2,
+      "control_id": 34,
+      "device_id": null,
+      "timestamp": null,
+      "day": 6,
+      "hour": 7,
+      "duration": 3,
+      "reconstruction_loss": 4.073159694671631,
+      "raw_fields": {
+        "position": 2,
+        "day": 6,
+        "hour": 7,
+        "persistence_or_device": 3,
+        "control": 34,
+        "source_format": "smartguard_10x4"
+      }
+    },
+    {
+      "rank": 3,
+      "position": 8,
+      "control_id": 155,
+      "device_id": null,
+      "timestamp": null,
+      "day": 6,
+      "hour": 7,
+      "duration": 24,
+      "reconstruction_loss": 3.90664005279541,
+      "raw_fields": {
+        "position": 8,
+        "day": 6,
+        "hour": 7,
+        "persistence_or_device": 24,
+        "control": 155,
+        "source_format": "smartguard_10x4"
+      }
+    },
+    {
+      "rank": 4,
+      "position": 5,
+      "control_id": 84,
+      "device_id": null,
+      "timestamp": null,
+      "day": 6,
+      "hour": 7,
+      "duration": 16,
+      "reconstruction_loss": 3.8318474292755127,
+      "raw_fields": {
+        "position": 5,
+        "day": 6,
+        "hour": 7,
+        "persistence_or_device": 16,
+        "control": 84,
+        "source_format": "smartguard_10x4"
+      }
+    },
+    {
+      "rank": 5,
+      "position": 1,
+      "control_id": 27,
+      "device_id": null,
+      "timestamp": null,
+      "day": 6,
+      "hour": 7,
+      "duration": 2,
+      "reconstruction_loss": 3.6933798789978027,
+      "raw_fields": {
+        "position": 1,
+        "day": 6,
+        "hour": 7,
+        "persistence_or_device": 2,
+        "control": 27,
+        "source_format": "smartguard_10x4"
+      }
+    }
+  ],
+  "top_abnormal_causal_edges": [
+    {
+      "rank": 1,
+      "from": 109,
+      "to": 15,
+      "weight": 0.0709511935710907
+    },
+    {
+      "rank": 2,
+      "from": 155,
+      "to": 91,
+      "weight": 0.06004875898361206
+    },
+    {
+      "rank": 3,
+      "from": 196,
+      "to": 91,
+      "weight": 0.05783141404390335
+    },
+    {
+      "rank": 4,
+      "from": 96,
+      "to": 91,
+      "weight": 0.055956847965717316
+    },
+    {
+      "rank": 5,
+      "from": 34,
+      "to": 41,
+      "weight": 0.05394914001226425
+    }
+  ],
+  "causal_graph_summary": {
+    "shape": [
+      29,
+      29
+    ],
+    "nonzero_edges": 660,
+    "max_edge_weight": 0.12583377957344055,
+    "mean_edge_weight": 0.011387277394533157
+  },
+  "detector": {
+    "weights": {
+      "alpha": 0.6,
+      "beta": 0.4,
+      "delta": 0.0
+    },
+    "threshold": 0.5,
+    "normalization": {
+      "rec_mean": 0.0,
+      "rec_std": 1.0,
+      "causal_mean": 0.0,
+      "causal_std": 1.0,
+      "context_mean": 0.0,
+      "context_std": 1.0
+    },
+    "vocab_size": 29
+  },
+  "case_study_rank": 1,
+  "source_score_record": {
+    "score": 2.295578324794769,
+    "rec_score": 3.531984329223633,
+    "causal_score": 0.440969318151474,
+    "pred": 1,
+    "label": null
+  },
+  "figures": {},
+  "warnings": [
+    "causal graph diff plot for smartguard_fr_train_000027 failed: No module named 'matplotlib'"
+  ]
+}

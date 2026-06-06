@@ -1,0 +1,27 @@
+{
+  "experiment": "synthetic data pipeline smoke test",
+  "synthetic_source": "SmartGen offline",
+  "notes": [],
+  "candidate_count": 80,
+  "kept_count": 0,
+  "rejected_count": 80,
+  "component_thresholds": {
+    "reconstruction_threshold": 3.7800458312034606,
+    "causal_threshold": 0.5926486372947692
+  },
+  "proxy_target_normal_fpr_before_tof": null,
+  "proxy_target_normal_fpr_after_tof": null,
+  "proxy_fpr_errors": {
+    "before": "'control_id 61 is missing from fusion vocab'",
+    "after": "no sequences"
+  },
+  "tof_outputs": {
+    "kept_jsonl": "/home/heyang/projects/CausalGenGuard/outputs/synthetic/feasibility_tof/kept.jsonl",
+    "rejected_jsonl": "/home/heyang/projects/CausalGenGuard/outputs/synthetic/feasibility_tof/rejected.jsonl",
+    "report_json": "/home/heyang/projects/CausalGenGuard/outputs/synthetic/feasibility_tof/report.json",
+    "kept_count_written": 0,
+    "rejected_count_written": 80
+  },
+  "tof_report_path": "/home/heyang/projects/CausalGenGuard/outputs/synthetic/feasibility_tof/report.json",
+  "observed_target_normal_fpr_reduction": null
+}

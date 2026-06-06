@@ -1,0 +1,42 @@
+{
+  "initial_count": 4,
+  "steps": {
+    "legality": {
+      "input": 4,
+      "kept": 4,
+      "rejected": 0
+    },
+    "reconstruction": {
+      "input": 4,
+      "kept": 3,
+      "rejected": 1,
+      "threshold": 1.3345047235488892
+    },
+    "causal": {
+      "input": 3,
+      "kept": 1,
+      "rejected": 2,
+      "threshold": 0.05982932671904563
+    },
+    "utility": {
+      "input": 1,
+      "kept": 1,
+      "rejected": 0,
+      "enabled": false,
+      "mode": "no_op_interface",
+      "reason": "full utility retraining is intentionally not run in offline Causal-TOF stage",
+      "train_sequence_count": 4,
+      "val_sequence_count": 4,
+      "candidate_count": 1
+    }
+  },
+  "outputs": {
+    "kept_jsonl": "/home/heyang/projects/CausalGenGuard/outputs/results/context_shift_toy/smoke_check/causal_tof_prefilter/filtered_synthetic/kept.jsonl",
+    "rejected_jsonl": "/home/heyang/projects/CausalGenGuard/outputs/results/context_shift_toy/smoke_check/causal_tof_prefilter/filtered_synthetic/rejected.jsonl",
+    "report_json": "/home/heyang/projects/CausalGenGuard/outputs/results/context_shift_toy/smoke_check/causal_tof_prefilter/filtered_synthetic/report.json",
+    "kept_count_written": 1,
+    "rejected_count_written": 3
+  },
+  "final_kept_count": 1,
+  "final_rejected_count": 3
+}

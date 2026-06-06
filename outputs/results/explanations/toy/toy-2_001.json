@@ -1,0 +1,154 @@
+{
+  "sequence_id": "toy-2",
+  "label": 0,
+  "anomaly_type": null,
+  "prediction": 1,
+  "scores": {
+    "score": 0.618008729815483,
+    "reconstruction_score": 1.003001093864441,
+    "causal_score": 0.040520183742046356,
+    "context_score": 0.0,
+    "z_reconstruction": 1.003001093864441,
+    "z_causal": 0.040520183742046356,
+    "z_context": 0.0,
+    "threshold": 0.5
+  },
+  "context": {
+    "dataset": "toy"
+  },
+  "context_graph_id": "global",
+  "sequence_summary": {
+    "event_count": 6,
+    "first_timestamp": null,
+    "last_timestamp": null,
+    "unique_controls": [
+      "camera",
+      "door",
+      "light"
+    ],
+    "unique_devices": []
+  },
+  "top_abnormal_tokens": [
+    {
+      "rank": 1,
+      "position": 3,
+      "control_id": "camera",
+      "device_id": null,
+      "timestamp": null,
+      "day": 0,
+      "hour": 3,
+      "duration": 1.0,
+      "reconstruction_loss": 1.251938819885254,
+      "raw_fields": {
+        "toy": true,
+        "position": 3
+      }
+    },
+    {
+      "rank": 2,
+      "position": 0,
+      "control_id": "camera",
+      "device_id": null,
+      "timestamp": null,
+      "day": 0,
+      "hour": 0,
+      "duration": 1.0,
+      "reconstruction_loss": 1.2453027963638306,
+      "raw_fields": {
+        "toy": true,
+        "position": 0
+      }
+    },
+    {
+      "rank": 3,
+      "position": 5,
+      "control_id": "door",
+      "device_id": null,
+      "timestamp": null,
+      "day": 0,
+      "hour": 5,
+      "duration": 3.0,
+      "reconstruction_loss": 1.0551913976669312,
+      "raw_fields": {
+        "toy": true,
+        "position": 5
+      }
+    },
+    {
+      "rank": 4,
+      "position": 2,
+      "control_id": "door",
+      "device_id": null,
+      "timestamp": null,
+      "day": 0,
+      "hour": 2,
+      "duration": 3.0,
+      "reconstruction_loss": 1.034867525100708,
+      "raw_fields": {
+        "toy": true,
+        "position": 2
+      }
+    },
+    {
+      "rank": 5,
+      "position": 1,
+      "control_id": "light",
+      "device_id": null,
+      "timestamp": null,
+      "day": 0,
+      "hour": 1,
+      "duration": 2.0,
+      "reconstruction_loss": 0.731155514717102,
+      "raw_fields": {
+        "toy": true,
+        "position": 1
+      }
+    }
+  ],
+  "top_abnormal_causal_edges": [
+    {
+      "rank": 1,
+      "from": "camera",
+      "to": "light",
+      "weight": 0.00018340256065130234
+    }
+  ],
+  "causal_graph_summary": {
+    "shape": [
+      3,
+      3
+    ],
+    "nonzero_edges": 4,
+    "max_edge_weight": 0.07652066648006439,
+    "mean_edge_weight": 0.011702509596943855
+  },
+  "detector": {
+    "weights": {
+      "alpha": 0.6,
+      "beta": 0.4,
+      "delta": 0.0
+    },
+    "threshold": 0.5,
+    "normalization": {
+      "rec_mean": 0.0,
+      "rec_std": 1.0,
+      "causal_mean": 0.0,
+      "causal_std": 1.0,
+      "context_mean": 0.0,
+      "context_std": 1.0
+    },
+    "vocab_size": 3
+  },
+  "case_study_rank": 1,
+  "source_score_record": {
+    "score": 0.618008729815483,
+    "rec_score": 1.003001093864441,
+    "causal_score": 0.040520183742046356,
+    "pred": 1,
+    "label": 0
+  },
+  "figures": {},
+  "warnings": [
+    "causal graph diff plot for toy-2 failed: No module named 'matplotlib'"
+  ]
+}

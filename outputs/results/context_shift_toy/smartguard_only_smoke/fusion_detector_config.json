@@ -1,0 +1,24 @@
+{
+  "dataset": "toy",
+  "transition": "winter->spring",
+  "threshold": 1.3786800327995117,
+  "alpha": 1.0,
+  "beta": 0.0,
+  "delta": 0.0,
+  "rec_mean": 1.2983644008636475,
+  "rec_std": 0.026213712990283966,
+  "causal_mean": 0.0,
+  "causal_std": 1.0,
+  "vocab": {
+    "light": 0,
+    "door": 1,
+    "camera": 2
+  },
+  "inverse_vocab": [
+    "light",
+    "door",
+    "camera"
+  ],
+  "A_norm_path": null,
+  "centrality_path": null
+}

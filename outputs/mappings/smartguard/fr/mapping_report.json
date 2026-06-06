@@ -1,0 +1,52 @@
+{
+  "dataset": "fr",
+  "source_path": "/home/heyang/projects/SmartGuard/data/data/fr/dictionary.py",
+  "device_count": 33,
+  "control_count": 222,
+  "id_to_device_count": 33,
+  "id_to_control_count": 222,
+  "all_key_controls_present": true,
+  "missing_key_controls": [],
+  "key_controls": {
+    "Light:switch on": {
+      "exists": true,
+      "id": 78
+    },
+    "Light:switch off": {
+      "exists": true,
+      "id": 77
+    },
+    "Camera:switch on": {
+      "exists": true,
+      "id": 37
+    },
+    "Camera:switch off": {
+      "exists": true,
+      "id": 36
+    },
+    "Television:switch on": {
+      "exists": true,
+      "id": 202
+    },
+    "Television:switch off": {
+      "exists": true,
+      "id": 201
+    },
+    "SmartLock:lock lock": {
+      "exists": true,
+      "id": 170
+    },
+    "SmartLock:lock unlock": {
+      "exists": true,
+      "id": 171
+    },
+    "WaterValve:valve open": {
+      "exists": true,
+      "id": 221
+    },
+    "WaterValve:valve close": {
+      "exists": true,
+      "id": 220
+    }
+  }
+}

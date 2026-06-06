@@ -1,0 +1,39 @@
+project:
+  name: CausalGenGuard
+  objective: Context-adaptive Causal Generation for Behavior-based IoT Anomaly Detection
+  seed: 42
+
+paths:
+  source_root: /home/heyang/projects
+  smartguard: /home/heyang/projects/SmartGuard
+  smartgen: /home/heyang/projects/SmartGen
+  gcad: /home/heyang/projects/GCAD
+  outputs: outputs
+
+data:
+  datasets:
+    - smartguard_fr
+    - smartguard_sp
+  context: standard
+  include_generated: false
+  include_causal_graph: true
+
+model:
+  backbone: smartguard_reconstruction
+  causal_module: gcad_style_graph_shift
+  generation_module: smartgen_offline_context
+  fusion: score_level
+
+training:
+  batch_size: 256
+  epochs: 0
+  learning_rate: 0.001
+  dry_run: true
+
+evaluation:
+  metrics:
+    - auc
+    - auprc
+    - f1
+    - fpr
+    - fnr

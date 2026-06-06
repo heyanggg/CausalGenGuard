@@ -1,0 +1,1 @@
+category,dataset,transition,method,precision,recall,f1,fpr,fnr,auroc,auprc,threshold,delta_f1_vs_smartguard,relative_f1_improvement_pct,adaptation_gain_f1,runtime_seconds,source_file,notes

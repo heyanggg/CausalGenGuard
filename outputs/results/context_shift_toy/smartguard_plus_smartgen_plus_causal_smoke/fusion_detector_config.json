@@ -1,0 +1,24 @@
+{
+  "dataset": "toy",
+  "transition": "winter->spring",
+  "threshold": 0.4497011676837399,
+  "alpha": 0.6,
+  "beta": 0.4,
+  "delta": 0.0,
+  "rec_mean": 1.141542673110962,
+  "rec_std": 0.022881057113409042,
+  "causal_mean": 0.03104364313185215,
+  "causal_std": 0.00834381952881813,
+  "vocab": {
+    "light": 0,
+    "door": 1,
+    "camera": 2
+  },
+  "inverse_vocab": [
+    "light",
+    "door",
+    "camera"
+  ],
+  "A_norm_path": "/home/heyang/projects/CausalGenGuard/outputs/results/context_shift_toy/smartguard_plus_smartgen_plus_causal_smoke/results/final_A_norm.npy",
+  "centrality_path": "/home/heyang/projects/CausalGenGuard/outputs/results/context_shift_toy/smartguard_plus_smartgen_plus_causal_smoke/results/final_causal_centrality.npy"
+}

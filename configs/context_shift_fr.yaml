@@ -1,0 +1,73 @@
+dataset: fr
+experiment: context_shift_final
+
+contexts:
+  source_candidates:
+    - winter
+    - single
+  target_candidates:
+    - spring
+    - multiple
+    - night
+
+paths:
+  smartgen_root: ../SmartGen/SmartGen/IoT_data/fr
+  smartguard_root: ../SmartGuard
+  control_to_id: outputs/mappings/smartguard/fr/control_to_id.json
+  id_to_control: outputs/mappings/smartguard/fr/id_to_control.json
+  output_csv: outputs/results/context_shift_final_fr.csv
+  output_json: outputs/results/context_shift_final_fr.json
+
+run_bounds:
+  max_source_train: 500
+  max_source_val: 200
+  max_target_normal: 300
+  max_target_anomaly: 300
+  max_synthetic: 500
+  epochs: 3
+  batch_size: 32
+  hidden_dim: 64
+  seed: 42
+
+smartgen:
+  prefer_textual_generated: true
+  generated_keywords:
+    - generation
+    - generated
+  generated_suffixes:
+    - _seq.pkl
+    - .pkl
+
+methods:
+  - id: source_only
+    label: A source_only
+    use_synthetic: false
+  - id: source_plus_raw_synthetic
+    label: B source_plus_raw_synthetic
+    use_synthetic: true
+    synthetic_filter: raw
+  - id: source_plus_tof_synthetic
+    label: C source_plus_tof_synthetic
+    use_synthetic: true
+    synthetic_filter: tof
+  - id: source_plus_causal_tof_synthetic
+    label: D source_plus_causal_tof_synthetic
+    use_synthetic: true
+    synthetic_filter: causal_tof
+  - id: oracle_target
+    label: oracle_target_upper_bound
+    train_on_target_normal: true
+    optional: true
+
+evaluation:
+  threshold_quantile: 0.95
+  primary_metric: target_normal_fpr
+  anomaly_metrics:
+    - anomaly_f1
+    - auroc
+    - auprc
+
+notes:
+  - SmartGuard standard experiments remain sanity checks only.
+  - Causal branch is not a detector main branch in the final route.
+  - Causal information is reserved for Causal-TOF filtering and explanations.

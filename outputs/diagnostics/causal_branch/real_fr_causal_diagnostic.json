@@ -1,0 +1,1108 @@
+{
+  "metrics_quantile_threshold": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "fpr": 0.1,
+    "fnr": 1.0,
+    "auroc": 0.41250000000000003,
+    "auprc": 0.4346958838467438
+  },
+  "quantile_threshold": 2.200418587433256,
+  "oracle_best": {
+    "threshold": -0.7384515023223008,
+    "precision": 0.5,
+    "recall": 1.0,
+    "f1": 0.6666666666666666,
+    "fpr": 1.0,
+    "fnr": 0.0,
+    "auroc": 0.41250000000000003,
+    "auprc": 0.4346958838467438,
+    "kind": "oracle_candidate"
+  },
+  "quantile_sweep_row": {
+    "threshold": 2.200418587433256,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "fpr": 0.1,
+    "fnr": 1.0,
+    "auroc": 0.41250000000000003,
+    "auprc": 0.4346958838467438,
+    "kind": "quantile_0.95"
+  },
+  "score_distribution": {
+    "normal_count": 60,
+    "anomaly_count": 60,
+    "normal_mean": 0.3721514086279759,
+    "normal_std": 1.2380787743703352,
+    "anomaly_mean": -0.02952577129279463,
+    "anomaly_std": 0.7724921161635678,
+    "normal_scores": [
+      1.4654412457169594,
+      -0.681363050798267,
+      0.30480476442907106,
+      3.102873879449994,
+      -0.6605323556500596,
+      1.0557143237904576,
+      3.102873879449994,
+      1.117490086445602,
+      1.5225859643615494,
+      -0.31443739283144145,
+      -0.7255404552979396,
+      1.117490086445602,
+      -0.6074731763946349,
+      -0.31443739283144145,
+      3.102873879449994,
+      1.3125788864242793,
+      -0.7255404552979396,
+      -0.6605323556500596,
+      1.1436705175778648,
+      -0.6058923975846169,
+      -0.6058923975846169,
+      -0.6605323556500596,
+      1.117490086445602,
+      -0.42453977119605296,
+      1.3125788864242793,
+      0.30480476442907106,
+      1.1436705175778648,
+      -0.6694455220941218,
+      1.4654412457169594,
+      -0.6074731763946349,
+      3.102873879449994,
+      -0.6747165419389994,
+      -0.42453977119605296,
+      1.0557143237904576,
+      -0.6694455220941218,
+      -0.6747165419389994,
+      -0.31443739283144145,
+      1.4654412457169594,
+      3.102873879449994,
+      -0.6694455220941218,
+      1.3125788864242793,
+      -0.6074731763946349,
+      -0.6605323556500596,
+      1.1436705175778648,
+      -0.681363050798267,
+      -0.6605323556500596,
+      -0.6605323556500596,
+      -0.6605323556500596,
+      -0.42453977119605296,
+      1.0557143237904576,
+      0.30480476442907106,
+      -0.6058923975846169,
+      3.102873879449994,
+      -0.6747165419389994,
+      -0.6605323556500596,
+      1.5225859643615494,
+      1.5225859643615494,
+      -0.681363050798267,
+      -0.7255404552979396,
+      -0.6605323556500596
+    ],
+    "anomaly_scores": [
+      1.3405883276226127,
+      0.6799461010634675,
+      1.1436705175778648,
+      -0.6952810000325763,
+      0.30480476442907106,
+      1.1393834790875088,
+      0.8221002224071502,
+      -0.6296418682200616,
+      -0.42453977119605296,
+      -0.7384515013223009,
+      -0.590073474319526,
+      1.117490086445602,
+      -0.6074731763946349,
+      -0.6296418682200616,
+      -0.5842345610642374,
+      -0.6952810000325763,
+      -0.7332390595524019,
+      1.1436705175778648,
+      -0.5645288729495452,
+      -0.7130259514494964,
+      -0.5842345610642374,
+      -0.7130259514494964,
+      -0.7130259514494964,
+      -0.6074731763946349,
+      -0.6296418682200616,
+      -0.6296418682200616,
+      -0.7255404552979396,
+      -0.31443739283144145,
+      -0.6747165419389994,
+      1.3405883276226127,
+      -0.6952810000325763,
+      -0.5498359043915787,
+      0.30480476442907106,
+      0.3254657075420012,
+      0.30480476442907106,
+      -0.6983151547817538,
+      -0.6058923975846169,
+      0.3254657075420012,
+      -0.31443739283144145,
+      1.1557746787534537,
+      -0.6074731763946349,
+      -0.6773373333056929,
+      0.30480476442907106,
+      -0.7107295606052081,
+      1.1557746787534537,
+      -0.6296418682200616,
+      0.8221002224071502,
+      1.0678253555997146,
+      -0.6747165419389994,
+      0.8221002224071502,
+      -0.7384515013223009,
+      1.3932768480375752,
+      1.1436705175778648,
+      0.3254657075420012,
+      1.0678253555997146,
+      -0.5498359043915787,
+      -0.31443739283144145,
+      -0.7384515013223009,
+      -0.7384515013223009,
+      1.117490086445602
+    ]
+  },
+  "edge_density": {
+    "node_count": 29,
+    "possible_directed_edges": 812,
+    "nonzero_edges": 693,
+    "density": 0.853448275862069,
+    "mean_weight": 0.0027960059233009815,
+    "max_weight": 0.0667446106672287
+  },
+  "top_edge_stability": {
+    "stable": true,
+    "jaccard_top_k": 0.9047619047619048,
+    "top_k": 20
+  },
+  "top_edges": [
+    {
+      "src": "Light:refresh refresh",
+      "dst": "Television:refresh refresh",
+      "weight": 0.0667446106672287
+    },
+    {
+      "src": "Camera:refresh refresh",
+      "dst": "Television:refresh refresh",
+      "weight": 0.04257085546851158
+    },
+    {
+      "src": "RobotCleaner:setRobotCleanerMovement cleaning",
+      "dst": "Television:refresh refresh",
+      "weight": 0.04145161435008049
+    },
+    {
+      "src": "Dryer:notification",
+      "dst": "Television:refresh refresh",
+      "weight": 0.04100855439901352
+    },
+    {
+      "src": "NetworkAudio:refresh refresh",
+      "dst": "Television:refresh refresh",
+      "weight": 0.039793889969587326
+    },
+    {
+      "src": "GarageDoor:doorControl open",
+      "dst": "Television:refresh refresh",
+      "weight": 0.03822126239538193
+    },
+    {
+      "src": "AirConditioner:switch off",
+      "dst": "Television:refresh refresh",
+      "weight": 0.035418033599853516
+    },
+    {
+      "src": "Dryer:refresh refresh",
+      "dst": "Television:refresh refresh",
+      "weight": 0.033278342336416245
+    },
+    {
+      "src": "Light:setLevel",
+      "dst": "Television:refresh refresh",
+      "weight": 0.032453689724206924
+    },
+    {
+      "src": "SmartPlug:refresh refresh",
+      "dst": "Television:refresh refresh",
+      "weight": 0.03178391605615616
+    },
+    {
+      "src": "AirPurifier:refresh refresh",
+      "dst": "Television:refresh refresh",
+      "weight": 0.029967643320560455
+    },
+    {
+      "src": "AirConditioner:switch on",
+      "dst": "Television:refresh refresh",
+      "weight": 0.029073547571897507
+    },
+    {
+      "src": "RobotCleaner:setRobotCleanerMovement charging",
+      "dst": "Television:refresh refresh",
+      "weight": 0.029054716229438782
+    },
+    {
+      "src": "GarageDoor:refresh refresh",
+      "dst": "Television:refresh refresh",
+      "weight": 0.02868133783340454
+    },
+    {
+      "src": "Blind:windowShade open",
+      "dst": "Television:refresh refresh",
+      "weight": 0.026987966150045395
+    },
+    {
+      "src": "Blind:windowShade close",
+      "dst": "Television:refresh refresh",
+      "weight": 0.02312721312046051
+    },
+    {
+      "src": "AirPurifier:refresh refresh",
+      "dst": "None:location",
+      "weight": 0.0197819285094738
+    },
+    {
+      "src": "Television:switch on",
+      "dst": "Television:refresh refresh",
+      "weight": 0.018457571044564247
+    },
+    {
+      "src": "Dryer:notification",
+      "dst": "None:location",
+      "weight": 0.018406247720122337
+    },
+    {
+      "src": "Dryer:refresh refresh",
+      "dst": "None:location",
+      "weight": 0.01839645765721798
+    },
+    {
+      "src": "Switch:refresh refresh",
+      "dst": "Television:refresh refresh",
+      "weight": 0.018054308369755745
+    },
+    {
+      "src": "Television:audioMute unmute",
+      "dst": "Television:refresh refresh",
+      "weight": 0.01767282374203205
+    },
+    {
+      "src": "NetworkAudio:audioVolume setVolume",
+      "dst": "None:location",
+      "weight": 0.017377974465489388
+    },
+    {
+      "src": "Blind:windowShade open",
+      "dst": "None:location",
+      "weight": 0.016891688108444214
+    },
+    {
+      "src": "AirConditioner:switch on",
+      "dst": "None:location",
+      "weight": 0.016648907214403152
+    },
+    {
+      "src": "Light:refresh refresh",
+      "dst": "None:location",
+      "weight": 0.01654312200844288
+    },
+    {
+      "src": "Television:setChannel",
+      "dst": "Television:refresh refresh",
+      "weight": 0.01512740645557642
+    },
+    {
+      "src": "ClothingCareMachine:refresh refresh",
+      "dst": "Television:refresh refresh",
+      "weight": 0.015032941475510597
+    },
+    {
+      "src": "Television:audioMute unmute",
+      "dst": "Other:refresh refresh",
+      "weight": 0.014973269775509834
+    },
+    {
+      "src": "RobotCleaner:setRobotCleanerMovement cleaning",
+      "dst": "Switch:refresh refresh",
+      "weight": 0.01459859311580658
+    },
+    {
+      "src": "Television:setChannel",
+      "dst": "Television:volumeDown",
+      "weight": 0.013990185223519802
+    },
+    {
+      "src": "GarageDoor:refresh refresh",
+      "dst": "None:location",
+      "weight": 0.013623502105474472
+    },
+    {
+      "src": "Television:audioMute unmute",
+      "dst": "None:location",
+      "weight": 0.012993997894227505
+    },
+    {
+      "src": "Light:setLevel",
+      "dst": "Switch:refresh refresh",
+      "weight": 0.012824333272874355
+    },
+    {
+      "src": "Television:volumeDown",
+      "dst": "Television:refresh refresh",
+      "weight": 0.0124184750020504
+    },
+    {
+      "src": "Other:refresh refresh",
+      "dst": "Television:refresh refresh",
+      "weight": 0.012350977398455143
+    },
+    {
+      "src": "Light:setLevel",
+      "dst": "Light:refresh refresh",
+      "weight": 0.011754682287573814
+    },
+    {
+      "src": "GarageDoor:doorControl open",
+      "dst": "Other:refresh refresh",
+      "weight": 0.011709083802998066
+    },
+    {
+      "src": "Television:setChannel",
+      "dst": "None:location",
+      "weight": 0.011296628974378109
+    },
+    {
+      "src": "Camera:notification",
+      "dst": "Television:refresh refresh",
+      "weight": 0.011074516922235489
+    },
+    {
+      "src": "SmartPlug:refresh refresh",
+      "dst": "Other:refresh refresh",
+      "weight": 0.01097925752401352
+    },
+    {
+      "src": "Camera:refresh refresh",
+      "dst": "None:location",
+      "weight": 0.010807901620864868
+    },
+    {
+      "src": "Other:refresh refresh",
+      "dst": "None:location",
+      "weight": 0.010655668564140797
+    },
+    {
+      "src": "Washer:refresh refresh",
+      "dst": "Television:refresh refresh",
+      "weight": 0.010451489128172398
+    },
+    {
+      "src": "ClothingCareMachine:refresh refresh",
+      "dst": "Television:switch on",
+      "weight": 0.010440116748213768
+    },
+    {
+      "src": "Television:setChannel",
+      "dst": "Camera:refresh refresh",
+      "weight": 0.010332547128200531
+    },
+    {
+      "src": "Dryer:refresh refresh",
+      "dst": "Other:refresh refresh",
+      "weight": 0.01022117305546999
+    },
+    {
+      "src": "Dryer:notification",
+      "dst": "Other:refresh refresh",
+      "weight": 0.010045504197478294
+    },
+    {
+      "src": "Washer:refresh refresh",
+      "dst": "ClothingCareMachine:refresh refresh",
+      "weight": 0.009943803772330284
+    },
+    {
+      "src": "NetworkAudio:audioVolume setVolume",
+      "dst": "Other:refresh refresh",
+      "weight": 0.0097107645124197
+    }
+  ],
+  "injection_report": {
+    "per_type_target": 20,
+    "success": {
+      "edge_break": 20,
+      "edge_injection": 20,
+      "lag_delay": 20
+    },
+    "skipped": {
+      "edge_break": 23,
+      "edge_injection": 2,
+      "lag_delay": 8
+    },
+    "injected_count": 60
+  },
+  "train_info": {
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.5893102082941267
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.37585334645377266
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.20420284105671777
+      }
+    ],
+    "window_size": 4,
+    "window_count": 360,
+    "causality_samples": 64
+  },
+  "counts": {
+    "train": 60,
+    "val": 20,
+    "test_normals": 20,
+    "anomalies": 60
+  },
+  "id_to_control_count": 222,
+  "previous_causal_result": {
+    "experiment": "A_norm top-edge causal anomaly smoke",
+    "normal_source": "/home/heyang/projects/CausalGenGuard/outputs/processed/fr_sequences_canonical.jsonl",
+    "counts": {
+      "normal": 26,
+      "anomaly": 26
+    },
+    "top_edges": [
+      {
+        "src": "Light:setLevel",
+        "dst": "AirPurifier:refresh refresh",
+        "weight": 0.10734915733337402
+      },
+      {
+        "src": "RobotCleaner:setRobotCleanerMovement charging",
+        "dst": "AirPurifier:refresh refresh",
+        "weight": 0.09558286517858505
+      },
+      {
+        "src": "Light:refresh refresh",
+        "dst": "AirPurifier:refresh refresh",
+        "weight": 0.09322500228881836
+      },
+      {
+        "src": "Television:setChannel",
+        "dst": "AirPurifier:refresh refresh",
+        "weight": 0.0908343493938446
+      },
+      {
+        "src": "Light:setLevel",
+        "dst": "NetworkAudio:audioVolume setVolume",
+        "weight": 0.08319525420665741
+      },
+      {
+        "src": "Television:switch on",
+        "dst": "AirPurifier:refresh refresh",
+        "weight": 0.08276063948869705
+      },
+      {
+        "src": "None:location",
+        "dst": "Elevator:refresh refresh",
+        "weight": 0.08071145415306091
+      },
+      {
+        "src": "Television:volumeDown",
+        "dst": "AirPurifier:refresh refresh",
+        "weight": 0.07971936464309692
+      },
+      {
+        "src": "Elevator:refresh refresh",
+        "dst": "Blind:windowShade close",
+        "weight": 0.07953984290361404
+      },
+      {
+        "src": "Other:refresh refresh",
+        "dst": "AirPurifier:refresh refresh",
+        "weight": 0.0789560005068779
+      },
+      {
+        "src": "Blind:windowShade open",
+        "dst": "RobotCleaner:setRobotCleanerMovement cleaning",
+        "weight": 0.07854966074228287
+      },
+      {
+        "src": "Television:setChannel",
+        "dst": "Light:refresh refresh",
+        "weight": 0.07465829700231552
+      },
+      {
+        "src": "ClothingCareMachine:refresh refresh",
+        "dst": "Blind:windowShade close",
+        "weight": 0.07341546565294266
+      },
+      {
+        "src": "SmartPlug:refresh refresh",
+        "dst": "AirConditioner:switch off",
+        "weight": 0.07303336262702942
+      },
+      {
+        "src": "Television:switch on",
+        "dst": "RobotCleaner:setRobotCleanerMovement cleaning",
+        "weight": 0.06845145672559738
+      },
+      {
+        "src": "Light:refresh refresh",
+        "dst": "Dryer:notification",
+        "weight": 0.06836295127868652
+      },
+      {
+        "src": "Television:volumeDown",
+        "dst": "Camera:refresh refresh",
+        "weight": 0.06536625325679779
+      },
+      {
+        "src": "SmartPlug:refresh refresh",
+        "dst": "Washer:refresh refresh",
+        "weight": 0.06448095291852951
+      },
+      {
+        "src": "SmartPlug:refresh refresh",
+        "dst": "Blind:windowShade open",
+        "weight": 0.06390535086393356
+      },
+      {
+        "src": "Elevator:refresh refresh",
+        "dst": "Light:refresh refresh",
+        "weight": 0.06317200511693954
+      }
+    ],
+    "injection_report": {
+      "per_type_target": 20,
+      "injected_count": 26,
+      "per_type_success": {
+        "edge_break": 0,
+        "edge_injection": 20,
+        "lag_delay": 6
+      },
+      "skipped_count": 269,
+      "injected": [
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000086",
+          "edge": {
+            "src": "SmartPlug:refresh refresh",
+            "dst": "GarageDoor:refresh refresh",
+            "weight": 0.06176722049713135
+          },
+          "injected_control": "SmartPlug:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000087",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "injected_control": "Television:setChannel"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000087",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "injected_control": "Television:setChannel"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000086",
+          "edge": {
+            "src": "SmartPlug:refresh refresh",
+            "dst": "GarageDoor:refresh refresh",
+            "weight": 0.06176722049713135
+          },
+          "injected_control": "SmartPlug:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000086",
+          "edge": {
+            "src": "SmartPlug:refresh refresh",
+            "dst": "GarageDoor:refresh refresh",
+            "weight": 0.06176722049713135
+          },
+          "injected_control": "SmartPlug:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000087",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "injected_control": "Television:setChannel"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000083",
+          "edge": {
+            "src": "SmartPlug:refresh refresh",
+            "dst": "Blind:windowShade open",
+            "weight": 0.06390535086393356
+          },
+          "injected_control": "SmartPlug:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000083",
+          "edge": {
+            "src": "SmartPlug:refresh refresh",
+            "dst": "Blind:windowShade open",
+            "weight": 0.06390535086393356
+          },
+          "injected_control": "SmartPlug:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000088",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "injected_control": "Television:setChannel"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000087",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "injected_control": "Television:setChannel"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000084",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "injected_control": "Television:setChannel"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000084",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "injected_control": "Television:setChannel"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000087",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "injected_control": "Television:setChannel"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000083",
+          "edge": {
+            "src": "SmartPlug:refresh refresh",
+            "dst": "Blind:windowShade open",
+            "weight": 0.06390535086393356
+          },
+          "injected_control": "SmartPlug:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000087",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "injected_control": "Television:setChannel"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000083",
+          "edge": {
+            "src": "SmartPlug:refresh refresh",
+            "dst": "Blind:windowShade open",
+            "weight": 0.06390535086393356
+          },
+          "injected_control": "SmartPlug:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000086",
+          "edge": {
+            "src": "SmartPlug:refresh refresh",
+            "dst": "GarageDoor:refresh refresh",
+            "weight": 0.06176722049713135
+          },
+          "injected_control": "SmartPlug:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000083",
+          "edge": {
+            "src": "SmartPlug:refresh refresh",
+            "dst": "Blind:windowShade open",
+            "weight": 0.06390535086393356
+          },
+          "injected_control": "SmartPlug:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000083",
+          "edge": {
+            "src": "SmartPlug:refresh refresh",
+            "dst": "Blind:windowShade open",
+            "weight": 0.06390535086393356
+          },
+          "injected_control": "SmartPlug:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "edge_injection",
+          "sequence_id": "smartguard_fr_train_000090",
+          "edge": {
+            "src": "SmartPlug:refresh refresh",
+            "dst": "GarageDoor:refresh refresh",
+            "weight": 0.06176722049713135
+          },
+          "injected_control": "SmartPlug:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "lag_delay",
+          "sequence_id": "smartguard_fr_train_000087",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "delayed_control": "Light:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "lag_delay",
+          "sequence_id": "smartguard_fr_train_000087",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "delayed_control": "Light:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "lag_delay",
+          "sequence_id": "smartguard_fr_train_000087",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "delayed_control": "Light:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "lag_delay",
+          "sequence_id": "smartguard_fr_train_000087",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "delayed_control": "Light:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "lag_delay",
+          "sequence_id": "smartguard_fr_train_000087",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "delayed_control": "Light:refresh refresh"
+        },
+        {
+          "status": "injected",
+          "anomaly_type": "lag_delay",
+          "sequence_id": "smartguard_fr_train_000087",
+          "edge": {
+            "src": "Television:setChannel",
+            "dst": "Light:refresh refresh",
+            "weight": 0.07465829700231552
+          },
+          "delayed_control": "Light:refresh refresh"
+        }
+      ],
+      "skipped": [
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        },
+        {
+          "status": "skipped",
+          "anomaly_type": "edge_break",
+          "skipped_reason": "top_edge_controls_not_found"
+        }
+      ]
+    },
+    "methods": {
+      "reconstruction_only": {
+        "method": "reconstruction_only",
+        "threshold": 1.8782523558754645,
+        "metrics": {
+          "precision": 0.782608695652174,
+          "recall": 0.6923076923076923,
+          "f1": 0.7346938775510203,
+          "fpr": 0.19230769230769232,
+          "fnr": 0.3076923076923077,
+          "auroc": 0.8905325443786982,
+          "auprc": 0.893517367499268
+        },
+        "score_summary": {
+          "normal_count": 26,
+          "anomaly_count": 26,
+          "predicted_anomaly_count": 23,
+          "normal_mean_score": 0.6550513521867812,
+          "anomaly_mean_score": 2.2672781138919276
+        }
+      },
+      "causal_only": {
+        "method": "causal_only",
+        "threshold": 2.0176681038724578,
+        "metrics": {
+          "precision": 0.7142857142857143,
+          "recall": 0.19230769230769232,
+          "f1": 0.30303030303030304,
+          "fpr": 0.07692307692307693,
+          "fnr": 0.8076923076923077,
+          "auroc": 0.6538461538461539,
+          "auprc": 0.686979893555576
+        },
+        "score_summary": {
+          "normal_count": 26,
+          "anomaly_count": 26,
+          "predicted_anomaly_count": 7,
+          "normal_mean_score": 0.2124141169737592,
+          "anomaly_mean_score": 0.7670523259182336
+        }
+      },
+      "fusion": {
+        "method": "fusion",
+        "threshold": 1.4114230982710458,
+        "metrics": {
+          "precision": 0.782608695652174,
+          "recall": 0.6923076923076923,
+          "f1": 0.7346938775510203,
+          "fpr": 0.19230769230769232,
+          "fnr": 0.3076923076923077,
+          "auroc": 0.8313609467455622,
+          "auprc": 0.8314678564678565
+        },
+        "score_summary": {
+          "normal_count": 26,
+          "anomaly_count": 26,
+          "predicted_anomaly_count": 23,
+          "normal_mean_score": 0.47799645810157226,
+          "anomaly_mean_score": 1.66718779870245
+        }
+      }
+    },
+    "best_method": "reconstruction_only",
+    "best_metrics": {
+      "precision": 0.782608695652174,
+      "recall": 0.6923076923076923,
+      "f1": 0.7346938775510203,
+      "fpr": 0.19230769230769232,
+      "fnr": 0.3076923076923077,
+      "auroc": 0.8905325443786982,
+      "auprc": 0.893517367499268
+    },
+    "signals": {
+      "causal_branch_positive": false,
+      "fusion_positive": false
+    }
+  },
+  "previous_feasibility_report_excerpt": "# Feasibility Report V2\n\nProject path: `/home/heyang/projects/CausalGenGuard`\nEnvironment: `/home/heyang/miniconda3/envs/smartguard_env/bin/python`\n\n## Run Bounds\n\n- Max normal sequences: 100\n- Epochs: 2\n- Train/val/test normal split: train=60, val=20, test=20\n- Vocab size: 29\n- Window size: 4\n\n## Input Files\n\n- `/home/heyang/projects/CausalGenGuard/outputs/processed/fr_sequences_canonical.jsonl`\n- `/home/heyang/projects/CausalGenGuard/outputs/labels/fr_smartguard_style_labeled.jsonl`\n- `/home/heyang/projects/CausalGenGuard/outputs/labels/fr_smartguard_style_labeled_report.json`\n- `/home/heyang/projects/CausalGenGuard/outputs/mappings/smartguard/fr/id_to_control.json`\n\n## Labeled Injection Report\n\n- named_injection_success_count: 100\n- fallback_numeric_injection_count: 0\n- skipped_count: 793\n\n## Experiment 1: SmartGuard-Style Named Semantic Anomaly Sanity\n\n| method | precision | recall | f1 | fpr | auroc | auprc |\n| --- | --- | --- | --- | --- | --- | --- |\n| reconstruction_only | 0.7018 | 0.4000 | 0.5096 | 0.1700 | 0.8423 | 0.8121 |\n| causal_only | 0.0000 | 0.0000 | 0.0000 | 0.0600 | 0.3465 | 0.4479 |\n| fusion | 0.5952 | 0.2500 | 0.3521 | 0.1700 | 0.7168 | 0.6704 |\n\nOutput: `outputs/results/sanity_fr_v2.json`\n\n## Experiment 2: A_norm Top-Edge Causal Anomaly Smoke\n\n| method | precision | recall | f1 | fpr | auroc | auprc |\n| --- | --- | --- | --- | --- | --- | --- |\n| reconstruction_only | 0.7826 | 0.6923 | 0.7347 | 0.1923 | 0.8905 | 0.8935 |\n| causal_only | 0.7143 | 0.1923 | 0.3030 | 0.0769 | 0.6538 | 0.6870 |\n| fusion | 0.7826 | 0.6923 | 0.7347 | 0.1923 | 0.8314 | 0.8315 |\n\nOutput: `outputs/results/causal_anomaly_smoke_v2.json`\n\n## Signals\n\n- Experiment 2 causal branch better than reconstruction_only: `False`\n- Experiment 2 fusion better than reconstruction_only: `False`\n- Recommend SmartGen alignment / Causal-TOF v2: `True`\n- Recommend formal main experiments: `False`\n\n## Notes\n\n- Bounded v2 run used canonical FR data only; no source projects were modified.\n- Nor"
+}

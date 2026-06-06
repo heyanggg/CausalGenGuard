@@ -1,0 +1,13 @@
+method,filter_strategy,selected,train_count,source_count,synthetic_count,kept_count,rejected_count,target_normal_count,target_normal_fpr,anomaly_count,anomaly_f1,auroc,auprc,adaptation_gain
+source_only,,True,500,500,0,0,0,252,0.5992063492063492,0,,,,
+source_plus_raw_synthetic,no_filter,True,1000,500,500,500,0,252,0.3055555555555556,0,,,,0.2936507936507936
+source_plus_tof_synthetic,no_filter,False,1000,500,500,500,0,252,0.3055555555555556,0,,,,0.2936507936507936
+source_plus_tof_synthetic,iqr_1.5,True,990,500,500,490,10,252,0.14285714285714285,0,,,,0.45634920634920634
+source_plus_tof_synthetic,iqr_3.0,False,990,500,500,490,10,252,0.14285714285714285,0,,,,0.45634920634920634
+source_plus_tof_synthetic,keep_top_80_percent_by_low_loss,False,892,500,500,392,108,252,0.38492063492063494,0,,,,0.21428571428571425
+source_plus_tof_synthetic,keep_top_90_percent_by_low_loss,False,941,500,500,441,59,252,0.39285714285714285,0,,,,0.20634920634920634
+source_plus_causal_tof_synthetic,tof_only,False,990,500,500,490,10,252,0.14285714285714285,0,,,,0.45634920634920634
+source_plus_causal_tof_synthetic,relaxed_causal_keep_90_percent,True,941,500,500,441,59,252,0.1388888888888889,0,,,,0.4603174603174603
+source_plus_causal_tof_synthetic,relaxed_causal_keep_95_percent,False,966,500,500,466,34,252,0.36507936507936506,0,,,,0.23412698412698413
+source_plus_causal_tof_synthetic,causal_filter_disabled,False,990,500,500,490,10,252,0.14285714285714285,0,,,,0.45634920634920634
+oracle_target,,True,752,752,0,0,0,252,0.08333333333333333,0,,,,0.5158730158730158

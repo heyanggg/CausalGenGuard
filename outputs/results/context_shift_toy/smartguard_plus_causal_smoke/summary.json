@@ -1,0 +1,64 @@
+{
+  "dataset": "toy",
+  "transition": "winter->spring",
+  "smoke_test": true,
+  "counts": {
+    "source_train": 4,
+    "source_val": 4,
+    "target_test": 4,
+    "synthetic_loaded": 4,
+    "synthetic_used": 0,
+    "train_total": 4,
+    "vocab_size": 3
+  },
+  "experiments": {
+    "use_smartgen": false,
+    "use_causal": true,
+    "use_causal_tof": false
+  },
+  "metrics": {
+    "precision": 1.0,
+    "recall": 0.5,
+    "f1": 0.6666666666666666,
+    "fpr": 0.0,
+    "fnr": 0.5,
+    "auroc": 0.75,
+    "auprc": 0.8333333333333333
+  },
+  "threshold": 0.449553822575236,
+  "backbone": {
+    "checkpoint": "/home/heyang/projects/CausalGenGuard/outputs/results/context_shift_toy/smartguard_plus_causal_smoke/checkpoints/final_smartguard_backbone.pt",
+    "history": [
+      {
+        "epoch": 1.0,
+        "train_loss": 1.4874272346496582
+      }
+    ],
+    "max_len": 6,
+    "causal_aware_nwrl": false
+  },
+  "causal": {
+    "checkpoint": "/home/heyang/projects/CausalGenGuard/outputs/results/context_shift_toy/smartguard_plus_causal_smoke/checkpoints/final_causal_predictor.pt",
+    "A_norm": "/home/heyang/projects/CausalGenGuard/outputs/results/context_shift_toy/smartguard_plus_causal_smoke/results/final_A_norm.npy",
+    "causal_centrality": "/home/heyang/projects/CausalGenGuard/outputs/results/context_shift_toy/smartguard_plus_causal_smoke/results/final_causal_centrality.npy",
+    "history": [
+      {
+        "epoch": 1.0,
+        "train_loss": 0.7400292828679085
+      }
+    ],
+    "window_size": 2,
+    "window_count": 16
+  },
+  "causal_tof": {
+    "skipped": true
+  },
+  "notes": [
+    "SmartGen augmentation disabled by experiment config"
+  ],
+  "outputs": {
+    "summary": "/home/heyang/projects/CausalGenGuard/outputs/results/context_shift_toy/smartguard_plus_causal_smoke/summary.json",
+    "fusion_config": "/home/heyang/projects/CausalGenGuard/outputs/results/context_shift_toy/smartguard_plus_causal_smoke/fusion_detector_config.json",
+    "scores": "/home/heyang/projects/CausalGenGuard/outputs/results/context_shift_toy/smartguard_plus_causal_smoke/fusion_scores.jsonl"
+  }
+}
