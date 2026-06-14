@@ -16,6 +16,8 @@ import json
 import pickle
 import random
 import sys
+from collections import Counter
+from datetime import date
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
@@ -34,6 +36,7 @@ except Exception:  # pragma: no cover - runtime fallback.
     yaml = None
 
 from causal_gen_guard.data.behavior_event_tensor import build_vocab
+from causal_gen_guard.data.attack_injector import inject_smartguard_style
 from causal_gen_guard.data.schemas import BehaviorEvent, BehaviorSequence
 from causal_gen_guard.evaluation.metrics import compute_binary_metrics
 from causal_gen_guard.models.causal_graph import compute_gradient_causality, normal_causal_pattern, sparsify_causality
@@ -65,6 +68,17 @@ CAUSAL_TOF_FILTER_STRATEGIES = [
     'relaxed_causal_keep_90_percent',
     'relaxed_causal_keep_95_percent',
     'causal_filter_disabled',
+]
+
+TARGET_CONTEXT_ANOMALY_TYPES = [
+    'SD_light_flickering',
+    'SD_camera_flickering',
+    'SD_tv_flickering',
+    'MD_camera_off_while_lock',
+    'MD_window_open_while_lock',
+    'DM_window_open_midnight',
+    'DM_watervalve_open_midnight',
+    'DD_microwave_long_time',
 ]
 
 
@@ -394,6 +408,189 @@ def load_target_anomalies(
     return (sequences[:limit] if limit is not None else sequences), files
 
 
+def target_labeled_paths(config: Dict[str, Any]) -> Tuple[Path, Path]:
+    dataset = str(config.get('dataset', 'fr'))
+    paths = dict(config.get('paths', {}))
+    jsonl_value = paths.get('target_labeled_jsonl') or f'outputs/labels/{dataset}_target_context_labeled.jsonl'
+    report_value = paths.get('target_labeled_report') or f'outputs/labels/{dataset}_target_context_labeled_report.json'
+    return resolve_path(jsonl_value), resolve_path(report_value)
+
+
+def count_jsonl(path: Path) -> int:
+    if not path.exists():
+        return 0
+    count = 0
+    with path.open('r', encoding='utf-8') as handle:
+        for line in handle:
+            if line.strip():
+                count += 1
+    return count
+
+
+def write_sequence_jsonl(sequences: Sequence[BehaviorSequence], path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open('w', encoding='utf-8') as handle:
+        for sequence in sequences:
+            handle.write(json.dumps(sequence.to_dict(), ensure_ascii=False) + '\n')
+
+
+def write_json_report(report: Dict[str, Any], path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(json_safe(report), ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+
+def read_labeled_jsonl(path: Path, max_normal: int, max_anomaly: int) -> Tuple[List[BehaviorSequence], List[BehaviorSequence]]:
+    normals: List[BehaviorSequence] = []
+    anomalies: List[BehaviorSequence] = []
+    if not path.exists():
+        return normals, anomalies
+    with path.open('r', encoding='utf-8') as handle:
+        for line_number, line in enumerate(handle, start=1):
+            stripped = line.strip()
+            if not stripped:
+                continue
+            try:
+                sequence = BehaviorSequence.from_dict(json.loads(stripped))
+            except json.JSONDecodeError as exc:
+                raise ValueError(f'Invalid target labeled JSONL line {line_number}: {path}') from exc
+            if label_to_int(sequence.label) == 1:
+                if len(anomalies) < max_anomaly:
+                    anomalies.append(sequence)
+            elif len(normals) < max_normal:
+                normals.append(sequence)
+            if len(normals) >= max_normal and len(anomalies) >= max_anomaly:
+                break
+    return normals, anomalies
+
+
+def _target_normal_copy(sequence: BehaviorSequence, index: int) -> BehaviorSequence:
+    copied = copy.deepcopy(sequence)
+    copied.sequence_id = f'target_normal::{index:06d}::{copied.sequence_id}'
+    copied.label = 0
+    copied.anomaly_type = 'normal'
+    copied.context = dict(copied.context)
+    copied.context['target_context_labeled'] = True
+    copied.context['target_labeled_role'] = 'normal'
+    return copied
+
+
+def _target_anomaly_copy(sequence: BehaviorSequence, index: int, anomaly_type: str) -> BehaviorSequence:
+    copied = copy.deepcopy(sequence)
+    copied.sequence_id = f'target_anomaly::{index:06d}::{copied.sequence_id}'
+    copied.label = 1
+    copied.anomaly_type = anomaly_type
+    copied.context = dict(copied.context)
+    copied.context['target_context_labeled'] = True
+    copied.context['target_labeled_role'] = 'anomaly'
+    copied.context['target_labeled_index'] = index
+    return copied
+
+
+def _dedupe_sequences(sequences: Sequence[BehaviorSequence]) -> List[BehaviorSequence]:
+    seen: set[str] = set()
+    deduped: List[BehaviorSequence] = []
+    for sequence in sequences:
+        if sequence.sequence_id in seen:
+            continue
+        seen.add(sequence.sequence_id)
+        deduped.append(sequence)
+    return deduped
+
+
+def build_target_context_labeled_set(
+    config: Dict[str, Any],
+    target_context: str,
+    target_normals: List[BehaviorSequence],
+    synthetic: List[BehaviorSequence],
+    bounds: Dict[str, Any],
+    seed: int,
+) -> Tuple[List[BehaviorSequence], List[BehaviorSequence], Dict[str, Any]]:
+    max_normal = min(int(bounds.get('max_target_labeled_normal', 500)), 500)
+    max_anomaly = min(int(bounds.get('max_target_labeled_anomaly', 500)), 500)
+    source_pool = _dedupe_sequences(target_normals + synthetic)[:max_normal]
+    labeled_normals = [_target_normal_copy(sequence, index) for index, sequence in enumerate(source_pool)]
+
+    success_by_type: Dict[str, List[int]] = {anomaly_type: [] for anomaly_type in TARGET_CONTEXT_ANOMALY_TYPES}
+    skipped_reason_counts: Dict[str, Counter[str]] = {anomaly_type: Counter() for anomaly_type in TARGET_CONTEXT_ANOMALY_TYPES}
+    for anomaly_type in TARGET_CONTEXT_ANOMALY_TYPES:
+        for index, sequence in enumerate(source_pool):
+            injected, report = inject_smartguard_style(sequence, anomaly_type)
+            if injected is None:
+                skipped_reason_counts[anomaly_type][str(report.get('skipped_reason', 'unknown'))] += 1
+            else:
+                success_by_type[anomaly_type].append(index)
+
+    candidate_count = {anomaly_type: len(indices) for anomaly_type, indices in success_by_type.items()}
+    injectable_types = [anomaly_type for anomaly_type, count in candidate_count.items() if count > 0]
+    candidate_pairs = [(anomaly_type, source_index) for anomaly_type in injectable_types for source_index in success_by_type[anomaly_type]]
+    rng = random.Random(seed)
+    rng.shuffle(candidate_pairs)
+
+    labeled_anomalies: List[BehaviorSequence] = []
+    injected_reports: List[Dict[str, Any]] = []
+    generation_failures: List[Dict[str, Any]] = []
+    per_anomaly_type_success = {anomaly_type: 0 for anomaly_type in TARGET_CONTEXT_ANOMALY_TYPES}
+    for anomaly_type, source_index in candidate_pairs[:max_anomaly]:
+        injected, report = inject_smartguard_style(source_pool[source_index], anomaly_type)
+        if injected is None:
+            generation_failures.append(report)
+            continue
+        labeled_anomalies.append(_target_anomaly_copy(injected, len(labeled_anomalies), anomaly_type))
+        injected_reports.append(report)
+        per_anomaly_type_success[anomaly_type] += 1
+
+    canonical_reference = resolve_path(dict(config.get('paths', {})).get('canonical_normal_jsonl', 'outputs/processed/fr_sequences_canonical.jsonl'))
+    report = {
+        'dataset': config.get('dataset', 'fr'),
+        'target_context': target_context,
+        'canonical_reference_path': str(canonical_reference),
+        'canonical_reference_count': count_jsonl(canonical_reference),
+        'source_pool_count': len(source_pool),
+        'real_target_normal_source_count': len(target_normals),
+        'synthetic_target_normal_source_count': len(synthetic),
+        'normal_count': len(labeled_normals),
+        'anomaly_count': len(labeled_anomalies),
+        'max_normal_bound': max_normal,
+        'max_anomaly_bound': max_anomaly,
+        'candidate_count': candidate_count,
+        'injectable_anomaly_types': injectable_types,
+        'per_anomaly_type_success': per_anomaly_type_success,
+        'skipped_type_count': {anomaly_type: count for anomaly_type, count in candidate_count.items() if count == 0},
+        'scan_skipped_reasons': {anomaly_type: dict(counter) for anomaly_type, counter in skipped_reason_counts.items()},
+        'generation_failure_count': len(generation_failures),
+        'generation_failures': generation_failures[:30],
+        'injected': injected_reports[:50],
+        'seed': seed,
+        'notes': [
+            'Only anomaly types with candidate_count > 0 are injected.',
+            'The target labeled set is bounded to at most 500 normal and 500 anomaly sequences for smoke-test scale.',
+        ],
+    }
+    return labeled_normals, labeled_anomalies, report
+
+
+def write_target_context_labeled_set(
+    config: Dict[str, Any],
+    target_context: str,
+    target_normals: List[BehaviorSequence],
+    synthetic: List[BehaviorSequence],
+    bounds: Dict[str, Any],
+    seed: int,
+) -> Tuple[List[BehaviorSequence], List[BehaviorSequence], Dict[str, Any], List[str]]:
+    jsonl_path, report_path = target_labeled_paths(config)
+    labeled_normals, labeled_anomalies, report = build_target_context_labeled_set(
+        config,
+        target_context,
+        target_normals,
+        synthetic,
+        bounds,
+        seed,
+    )
+    write_sequence_jsonl(labeled_normals + labeled_anomalies, jsonl_path)
+    write_json_report(report, report_path)
+    return labeled_normals, labeled_anomalies, report, [str(jsonl_path), str(report_path)]
+
+
 def max_event_len(sequences: List[BehaviorSequence]) -> int:
     return max((len(sequence.events) for sequence in sequences), default=0)
 
@@ -526,6 +723,9 @@ def evaluate(
         'target_normal_fpr': target_normal_fpr,
         'target_normal_score_mean': float(np.mean(normal_scores)) if normal_scores else None,
         'anomaly_count': len(target_anomalies),
+        'precision': None,
+        'recall': None,
+        'f1': None,
         'anomaly_f1': None,
         'auroc': None,
         'auprc': None,
@@ -535,7 +735,16 @@ def evaluate(
         y_true = [label_to_int(sequence.label) for sequence in eval_sequences]
         y_score = score_values(detector, eval_sequences)
         metrics = compute_binary_metrics(y_true, y_score, threshold)
-        result.update({'anomaly_f1': metrics['f1'], 'auroc': metrics['auroc'], 'auprc': metrics['auprc']})
+        result.update(
+            {
+                'precision': metrics['precision'],
+                'recall': metrics['recall'],
+                'f1': metrics['f1'],
+                'anomaly_f1': metrics['f1'],
+                'auroc': metrics['auroc'],
+                'auprc': metrics['auprc'],
+            }
+        )
     return result
 
 
@@ -890,6 +1099,9 @@ def write_csv(path: Path, rows: List[Dict[str, Any]]) -> None:
         'target_normal_count',
         'target_normal_fpr',
         'anomaly_count',
+        'precision',
+        'recall',
+        'f1',
         'anomaly_f1',
         'auroc',
         'auprc',
@@ -942,6 +1154,9 @@ def compact_row(row: Dict[str, Any]) -> Dict[str, Any]:
         'kept_count': row.get('kept_count'),
         'rejected_count': row.get('rejected_count'),
         'target_normal_fpr': row.get('target_normal_fpr'),
+        'precision': row.get('precision'),
+        'recall': row.get('recall'),
+        'f1': row.get('f1'),
         'anomaly_f1': row.get('anomaly_f1'),
         'auroc': row.get('auroc'),
         'auprc': row.get('auprc'),
@@ -1043,11 +1258,12 @@ def write_final_run_report(path: Path, payload: Dict[str, Any]) -> None:
     source_row = next((row for row in payload['rows'] if row.get('method') == 'source_only'), None)
     non_oracle_selected = [row for row in selected_rows if row.get('method') not in ('source_only', 'oracle_target')]
     best_non_oracle = best_by_target_fpr(non_oracle_selected) if non_oracle_selected else None
+    target_labeled_report = dict(payload.get('target_labeled_report') or {})
 
     lines = [
         '# Final Context Shift Run Report',
         '',
-        'Date: 2026-06-06',
+        f'Date: {date.today().isoformat()}',
         f"Project path: `{PROJECT_ROOT}`",
         '',
         '## Run Status',
@@ -1068,22 +1284,46 @@ def write_final_run_report(path: Path, payload: Dict[str, Any]) -> None:
         '',
         f"- synthetic_count: `{payload['synthetic_count']}`",
         '',
+        '## Target Labeled Anomaly Set',
+        '',
+        f"- target_labeled_jsonl: `{payload.get('target_labeled_jsonl')}`",
+        f"- target_labeled_report: `{payload.get('target_labeled_report_path')}`",
+        f"- labeled_normal_count: `{target_labeled_report.get('normal_count', 0)}`",
+        f"- labeled_anomaly_count: `{target_labeled_report.get('anomaly_count', 0)}`",
+        f"- target_anomaly_source: `{payload.get('target_anomaly_source')}`",
+        f"- injectable_anomaly_types: `{target_labeled_report.get('injectable_anomaly_types', [])}`",
+        '',
+        '| anomaly_type | candidate_count | injected_count |',
+        '| --- | ---: | ---: |',
+    ]
+    candidate_count = dict(target_labeled_report.get('candidate_count') or {})
+    per_success = dict(target_labeled_report.get('per_anomaly_type_success') or {})
+    for anomaly_type in TARGET_CONTEXT_ANOMALY_TYPES:
+        lines.append(f"| {anomaly_type} | {candidate_count.get(anomaly_type, 0)} | {per_success.get(anomaly_type, 0)} |")
+
+    lines.extend(
+        [
+            '',
         '## Selected Method Results',
         '',
-        '| method | filter_strategy | kept_count | rejected_count | target_normal_fpr | anomaly_f1 | auroc | auprc |',
-        '| --- | --- | ---: | ---: | ---: | --- | --- | --- |',
+        '| method | filter_strategy | kept_count | rejected_count | target_normal_fpr | precision | recall | f1 | auroc | auprc | adaptation_gain |',
+        '| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
     ]
+    )
     for row in selected_rows:
         lines.append(
-            '| {method} | {strategy} | {kept} | {rejected} | {fpr} | {f1} | {auroc} | {auprc} |'.format(
+            '| {method} | {strategy} | {kept} | {rejected} | {fpr} | {precision} | {recall} | {f1} | {auroc} | {auprc} | {gain} |'.format(
                 method=row.get('method'),
                 strategy=row.get('filter_strategy') or '',
                 kept=row.get('kept_count', 0),
                 rejected=row.get('rejected_count', 0),
                 fpr=format_metric(row.get('target_normal_fpr')),
-                f1=format_metric(row.get('anomaly_f1')),
+                precision=format_metric(row.get('precision')),
+                recall=format_metric(row.get('recall')),
+                f1=format_metric(row.get('f1')),
                 auroc=format_metric(row.get('auroc')),
                 auprc=format_metric(row.get('auprc')),
+                gain=format_metric(row.get('adaptation_gain')),
             )
         )
 
@@ -1092,19 +1332,25 @@ def write_final_run_report(path: Path, payload: Dict[str, Any]) -> None:
             '',
             '## Filter Strategy Sweep',
             '',
-            '| method | filter_strategy | selected | kept_count | rejected_count | target_normal_fpr |',
-            '| --- | --- | --- | ---: | ---: | ---: |',
+            '| method | filter_strategy | selected | kept_count | rejected_count | target_normal_fpr | precision | recall | f1 | auroc | auprc | adaptation_gain |',
+            '| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
         ]
     )
     for row in sweep_rows:
         lines.append(
-            '| {method} | {strategy} | {selected} | {kept} | {rejected} | {fpr} |'.format(
+            '| {method} | {strategy} | {selected} | {kept} | {rejected} | {fpr} | {precision} | {recall} | {f1} | {auroc} | {auprc} | {gain} |'.format(
                 method=row.get('method'),
                 strategy=row.get('filter_strategy') or '',
                 selected='yes' if row.get('selected') else 'no',
                 kept=row.get('kept_count', 0),
                 rejected=row.get('rejected_count', 0),
                 fpr=format_metric(row.get('target_normal_fpr')),
+                precision=format_metric(row.get('precision')),
+                recall=format_metric(row.get('recall')),
+                f1=format_metric(row.get('f1')),
+                auroc=format_metric(row.get('auroc')),
+                auprc=format_metric(row.get('auprc')),
+                gain=format_metric(row.get('adaptation_gain')),
             )
         )
 
@@ -1114,7 +1360,9 @@ def write_final_run_report(path: Path, payload: Dict[str, Any]) -> None:
             '## Metric Availability',
             '',
             '- `target_normal_fpr`: available for all methods.',
-            f"- `anomaly_f1`: {'available' if payload['target_anomaly_available'] else 'skipped'}.",
+            f"- `precision`: {'available' if payload['target_anomaly_available'] else 'skipped'}.",
+            f"- `recall`: {'available' if payload['target_anomaly_available'] else 'skipped'}.",
+            f"- `f1`: {'available' if payload['target_anomaly_available'] else 'skipped'}.",
             f"- `auroc`: {'available' if payload['target_anomaly_available'] else 'skipped'}.",
             f"- `auprc`: {'available' if payload['target_anomaly_available'] else 'skipped'}.",
         ]
@@ -1137,6 +1385,8 @@ def write_final_run_report(path: Path, payload: Dict[str, Any]) -> None:
             '',
             '## Output Files',
             '',
+            '- `outputs/labels/fr_target_context_labeled.jsonl`',
+            '- `outputs/labels/fr_target_context_labeled_report.json`',
             '- `outputs/results/context_shift_final_fr.csv`',
             '- `outputs/results/context_shift_final_fr.json`',
             '- `outputs/logs/TOF_FILTER_ANALYSIS.md`',
@@ -1163,11 +1413,26 @@ def run(config: Dict[str, Any]) -> Dict[str, Any]:
     target_normals = load_context_normals(config, target_context, ['test', 'split_test', 'vld', 'trn'], control_to_id, id_to_control, int(bounds.get('max_target_normal', 300)))
     target_anomalies, target_anomaly_files = load_target_anomalies(config, target_context, control_to_id, id_to_control, int(bounds.get('max_target_anomaly', 300)))
     synthetic, synthetic_files = load_target_synthetic(config, target_context, control_to_id, id_to_control, int(bounds.get('max_synthetic', 500)))
+    target_labeled_normals, target_labeled_anomalies, target_labeled_report, target_labeled_files = write_target_context_labeled_set(
+        config,
+        target_context,
+        target_normals,
+        synthetic,
+        bounds,
+        seed + 1000,
+    )
+    if target_labeled_anomalies:
+        target_anomaly_limit = min(int(bounds.get('max_target_anomaly', 300)), 500)
+        target_anomalies = target_labeled_anomalies[:target_anomaly_limit]
+        target_anomaly_files = target_labeled_files
+        target_anomaly_source = 'target_context_labeled_jsonl'
+    else:
+        target_anomaly_source = 'smartgen_existing_anomaly_files' if target_anomalies else 'none'
 
     if not source_train or not source_val or not target_normals:
         raise ValueError('source_train, source_val, and target_normals must all be non-empty')
 
-    all_vocab_sequences = source_train + source_val + target_normals + target_anomalies + synthetic
+    all_vocab_sequences = source_train + source_val + target_normals + target_labeled_normals + target_anomalies + synthetic
     vocab = build_vocab(all_vocab_sequences)
     rows: List[Dict[str, Any]] = []
 
@@ -1346,8 +1611,12 @@ def run(config: Dict[str, Any]) -> Dict[str, Any]:
         },
         'synthetic_files': synthetic_files,
         'target_anomaly_files': target_anomaly_files,
+        'target_anomaly_source': target_anomaly_source,
+        'target_labeled_jsonl': str(target_labeled_files[0]),
+        'target_labeled_report_path': str(target_labeled_files[1]),
+        'target_labeled_report': target_labeled_report,
         'target_anomaly_available': bool(target_anomalies),
-        'skipped_metrics': [] if target_anomalies else ['anomaly_f1', 'auroc', 'auprc'],
+        'skipped_metrics': [] if target_anomalies else ['precision', 'recall', 'f1', 'anomaly_f1', 'auroc', 'auprc'],
         'synthetic_filter_reports': {
             'raw': filter_report(raw_payload),
             'tof_selected': filter_report(best_tof_payload),

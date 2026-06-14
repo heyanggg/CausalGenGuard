@@ -1,0 +1,432 @@
+{
+  "dataset": "sp",
+  "transition": "seasonal",
+  "source_context": "winter",
+  "target_context": "spring",
+  "mapping_type": "smartguard_numeric",
+  "rows": [
+    {
+      "dataset": "sp",
+      "transition": "seasonal",
+      "source_context": "winter",
+      "target_context": "spring",
+      "mapping_type": "smartguard_numeric",
+      "method": "source_only",
+      "filter_strategy": "",
+      "target_normal_count": 500,
+      "target_anomaly_count": 18,
+      "synthetic_count": 0,
+      "kept_count": 0,
+      "rejected_count": 0,
+      "target_normal_fpr": 0.864,
+      "precision": 0.02040816326530612,
+      "recall": 0.5,
+      "f1": 0.039215686274509796,
+      "auroc": 0.4003333333333333,
+      "auprc": 0.07934165001978682,
+      "adaptation_gain": null,
+      "status": "success",
+      "missing_reason": ""
+    },
+    {
+      "dataset": "sp",
+      "transition": "seasonal",
+      "source_context": "winter",
+      "target_context": "spring",
+      "mapping_type": "smartguard_numeric",
+      "method": "source_plus_raw_synthetic",
+      "filter_strategy": "no_filter",
+      "target_normal_count": 500,
+      "target_anomaly_count": 18,
+      "synthetic_count": 500,
+      "kept_count": 500,
+      "rejected_count": 0,
+      "target_normal_fpr": 0.276,
+      "precision": 0.04827586206896552,
+      "recall": 0.3888888888888889,
+      "f1": 0.08588957055214724,
+      "auroc": 0.4041111111111111,
+      "auprc": 0.04482979281105697,
+      "adaptation_gain": 0.588,
+      "status": "success",
+      "missing_reason": ""
+    },
+    {
+      "dataset": "sp",
+      "transition": "seasonal",
+      "source_context": "winter",
+      "target_context": "spring",
+      "mapping_type": "smartguard_numeric",
+      "method": "source_plus_tof_synthetic",
+      "filter_strategy": "iqr_1.5",
+      "target_normal_count": 500,
+      "target_anomaly_count": 18,
+      "synthetic_count": 500,
+      "kept_count": 470,
+      "rejected_count": 30,
+      "target_normal_fpr": 0.604,
+      "precision": 0.022653721682847898,
+      "recall": 0.3888888888888889,
+      "f1": 0.04281345565749236,
+      "auroc": 0.37377777777777776,
+      "auprc": 0.03493384364351507,
+      "adaptation_gain": 0.26,
+      "status": "success",
+      "missing_reason": ""
+    },
+    {
+      "dataset": "sp",
+      "transition": "seasonal",
+      "source_context": "winter",
+      "target_context": "spring",
+      "mapping_type": "smartguard_numeric",
+      "method": "source_plus_causal_tof_synthetic",
+      "filter_strategy": "relaxed_causal_keep_90_percent",
+      "target_normal_count": 500,
+      "target_anomaly_count": 18,
+      "synthetic_count": 500,
+      "kept_count": 423,
+      "rejected_count": 77,
+      "target_normal_fpr": 0.35,
+      "precision": 0.038461538461538464,
+      "recall": 0.3888888888888889,
+      "f1": 0.06999999999999999,
+      "auroc": 0.354,
+      "auprc": 0.044437921196558296,
+      "adaptation_gain": 0.514,
+      "status": "success",
+      "missing_reason": ""
+    },
+    {
+      "dataset": "sp",
+      "transition": "seasonal",
+      "source_context": "winter",
+      "target_context": "spring",
+      "mapping_type": "smartguard_numeric",
+      "method": "oracle_target",
+      "filter_strategy": "",
+      "target_normal_count": 500,
+      "target_anomaly_count": 18,
+      "synthetic_count": 0,
+      "kept_count": 0,
+      "rejected_count": 0,
+      "target_normal_fpr": 0.014,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "auroc": 0.8402222222222222,
+      "auprc": 0.17035549707523828,
+      "adaptation_gain": 0.85,
+      "status": "success",
+      "missing_reason": ""
+    }
+  ],
+  "target_labeled_report": {
+    "dataset": "sp",
+    "target_context": "spring",
+    "canonical_reference_path": "/home/heyang/projects/CausalGenGuard/outputs/processed/sp_sequences_canonical.jsonl",
+    "canonical_reference_count": 0,
+    "source_pool_count": 500,
+    "real_target_normal_source_count": 500,
+    "synthetic_target_normal_source_count": 500,
+    "normal_count": 500,
+    "anomaly_count": 18,
+    "max_normal_bound": 500,
+    "max_anomaly_bound": 500,
+    "candidate_count": {
+      "SD_light_flickering": 11,
+      "SD_camera_flickering": 0,
+      "SD_tv_flickering": 7,
+      "MD_camera_off_while_lock": 0,
+      "MD_window_open_while_lock": 0,
+      "DM_window_open_midnight": 0,
+      "DM_watervalve_open_midnight": 0,
+      "DD_microwave_long_time": 0
+    },
+    "injectable_anomaly_types": [
+      "SD_light_flickering",
+      "SD_tv_flickering"
+    ],
+    "per_anomaly_type_success": {
+      "SD_light_flickering": 11,
+      "SD_camera_flickering": 0,
+      "SD_tv_flickering": 7,
+      "MD_camera_off_while_lock": 0,
+      "MD_window_open_while_lock": 0,
+      "DM_window_open_midnight": 0,
+      "DM_watervalve_open_midnight": 0,
+      "DD_microwave_long_time": 0
+    },
+    "skipped_type_count": {
+      "SD_camera_flickering": 0,
+      "MD_camera_off_while_lock": 0,
+      "MD_window_open_while_lock": 0,
+      "DM_window_open_midnight": 0,
+      "DM_watervalve_open_midnight": 0,
+      "DD_microwave_long_time": 0
+    },
+    "scan_skipped_reasons": {
+      "SD_light_flickering": {
+        "control_not_found:light": 489
+      },
+      "SD_camera_flickering": {
+        "control_not_found:camera": 500
+      },
+      "SD_tv_flickering": {
+        "control_not_found:tv": 493
+      },
+      "MD_camera_off_while_lock": {
+        "required_control_not_found:lock_or_camera_off": 500
+      },
+      "MD_window_open_while_lock": {
+        "required_control_not_found:lock_or_window_open": 500
+      },
+      "DM_window_open_midnight": {
+        "control_not_found:window_open": 500
+      },
+      "DM_watervalve_open_midnight": {
+        "control_not_found:watervalve_open": 500
+      },
+      "DD_microwave_long_time": {
+        "control_not_found:microwave": 500
+      }
+    },
+    "generation_failure_count": 0,
+    "generation_failures": [],
+    "injected": [
+      {
+        "sequence_id": "test_000255",
+        "anomaly_type": "SD_tv_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Television:switch off"
+      },
+      {
+        "sequence_id": "split_test_000019",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      },
+      {
+        "sequence_id": "test_000362",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      },
+      {
+        "sequence_id": "test_000202",
+        "anomaly_type": "SD_tv_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Television:switch off"
+      },
+      {
+        "sequence_id": "test_000357",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      },
+      {
+        "sequence_id": "test_000120",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      },
+      {
+        "sequence_id": "test_000137",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      },
+      {
+        "sequence_id": "test_000275",
+        "anomaly_type": "SD_tv_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Television:switch off"
+      },
+      {
+        "sequence_id": "test_000136",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      },
+      {
+        "sequence_id": "test_000124",
+        "anomaly_type": "SD_tv_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Television:switch off"
+      },
+      {
+        "sequence_id": "test_000303",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      },
+      {
+        "sequence_id": "split_test_000017",
+        "anomaly_type": "SD_tv_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Television:switch off"
+      },
+      {
+        "sequence_id": "test_000349",
+        "anomaly_type": "SD_tv_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Television:switch off"
+      },
+      {
+        "sequence_id": "test_000301",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      },
+      {
+        "sequence_id": "test_000008",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      },
+      {
+        "sequence_id": "test_000007",
+        "anomaly_type": "SD_tv_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Television:switch off"
+      },
+      {
+        "sequence_id": "test_000230",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      },
+      {
+        "sequence_id": "test_000307",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      }
+    ],
+    "seed": 1042,
+    "notes": [
+      "Only anomaly types with candidate_count > 0 are injected.",
+      "The target labeled set is bounded to at most 500 normal and 500 anomaly sequences for smoke-test scale."
+    ]
+  },
+  "target_labeled_files": [
+    "/home/heyang/projects/CausalGenGuard/outputs/results/context_shift_multidataset/sp_seasonal_target_labeled.jsonl",
+    "/home/heyang/projects/CausalGenGuard/outputs/results/context_shift_multidataset/sp_seasonal_target_labeled_report.json"
+  ],
+  "balanced_report": {
+    "normal_count": 500,
+    "anomaly_count": 14,
+    "original_anomaly_counts": {
+      "SD_light_flickering": 11,
+      "SD_tv_flickering": 7
+    },
+    "min_count": 7,
+    "max_per_type": 30,
+    "take_per_type": 7,
+    "included_counts": {
+      "SD_light_flickering": 7,
+      "SD_tv_flickering": 7
+    },
+    "low_support": {},
+    "seed": 2042,
+    "notes": [
+      "Balanced means anomaly types are capped to the same nonzero min_count, with an upper cap of 30.",
+      "Normal rows are retained up to 500 to preserve target-normal FPR context."
+    ]
+  },
+  "balanced_rows": [
+    {
+      "method": "source_only",
+      "filter_strategy": "",
+      "normal_count": 500,
+      "anomaly_count": 14,
+      "target_normal_fpr": 0.864,
+      "precision": 0.02040816326530612,
+      "recall": 0.6428571428571429,
+      "f1": 0.03956043956043956,
+      "auroc": 0.5128571428571429,
+      "auprc": 0.09122258918122456,
+      "kept_count": 0,
+      "rejected_count": 0,
+      "adaptation_gain": null
+    },
+    {
+      "method": "source_plus_raw_synthetic",
+      "filter_strategy": "no_filter",
+      "normal_count": 500,
+      "anomaly_count": 14,
+      "target_normal_fpr": 0.276,
+      "precision": 0.04827586206896552,
+      "recall": 0.5,
+      "f1": 0.0880503144654088,
+      "auroc": 0.47914285714285715,
+      "auprc": 0.04537658514225104,
+      "kept_count": 500,
+      "rejected_count": 0,
+      "adaptation_gain": 0.588
+    },
+    {
+      "method": "source_plus_tof_synthetic",
+      "filter_strategy": "iqr_1.5",
+      "normal_count": 500,
+      "anomaly_count": 14,
+      "target_normal_fpr": 0.604,
+      "precision": 0.022653721682847898,
+      "recall": 0.5,
+      "f1": 0.043343653250774,
+      "auroc": 0.4397142857142857,
+      "auprc": 0.0326331319930129,
+      "kept_count": 470,
+      "rejected_count": 30,
+      "adaptation_gain": 0.26
+    },
+    {
+      "method": "source_plus_causal_tof_synthetic",
+      "filter_strategy": "relaxed_causal_keep_90_percent",
+      "normal_count": 500,
+      "anomaly_count": 14,
+      "target_normal_fpr": 0.35,
+      "precision": 0.038461538461538464,
+      "recall": 0.5,
+      "f1": 0.07142857142857144,
+      "auroc": 0.4498571428571429,
+      "auprc": 0.04618059364944477,
+      "kept_count": 423,
+      "rejected_count": 77,
+      "adaptation_gain": 0.514
+    },
+    {
+      "method": "oracle_target",
+      "filter_strategy": "",
+      "normal_count": 500,
+      "anomaly_count": 14,
+      "target_normal_fpr": 0.014,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "auroc": 0.8451428571428571,
+      "auprc": 0.17139464896598405,
+      "kept_count": 0,
+      "rejected_count": 0,
+      "adaptation_gain": 0.85
+    }
+  ]
+}

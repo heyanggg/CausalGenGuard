@@ -1,0 +1,952 @@
+{
+  "source_context": "winter",
+  "target_context": "spring",
+  "rows": [
+    {
+      "method": "source_only",
+      "filter_strategy": "",
+      "anomaly_type": "SD_light_flickering",
+      "anomaly_count": 37,
+      "low_support": false,
+      "precision": 0.1793478260869565,
+      "recall": 0.8918918918918919,
+      "f1": 0.2986425339366516,
+      "auroc": 0.5901973401973402,
+      "auprc": 0.1558684144170993,
+      "mean_score_normal": 3.0046156813471034,
+      "mean_score_anomaly": 3.2749562035097255,
+      "score_margin": 0.27034052216262205
+    },
+    {
+      "method": "source_only",
+      "filter_strategy": "",
+      "anomaly_type": "SD_camera_flickering",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 3.0046156813471034,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_only",
+      "filter_strategy": "",
+      "anomaly_type": "SD_tv_flickering",
+      "anomaly_count": 6,
+      "low_support": false,
+      "precision": 0.03821656050955414,
+      "recall": 1.0,
+      "f1": 0.07361963190184048,
+      "auroc": 0.5343915343915344,
+      "auprc": 0.0300363496731337,
+      "mean_score_normal": 3.0046156813471034,
+      "mean_score_anomaly": 2.8467214607971543,
+      "score_margin": -0.15789422054994917
+    },
+    {
+      "method": "source_only",
+      "filter_strategy": "",
+      "anomaly_type": "MD_camera_off_while_lock",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 3.0046156813471034,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_only",
+      "filter_strategy": "",
+      "anomaly_type": "MD_window_open_while_lock",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 3.0046156813471034,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_only",
+      "filter_strategy": "",
+      "anomaly_type": "DM_window_open_midnight",
+      "anomaly_count": 188,
+      "low_support": false,
+      "precision": 0.20105820105820105,
+      "recall": 0.20212765957446807,
+      "f1": 0.2015915119363395,
+      "auroc": 0.2489868287740628,
+      "auprc": 0.2989603829784735,
+      "mean_score_normal": 3.0046156813471034,
+      "mean_score_anomaly": 1.594072881264477,
+      "score_margin": -1.4105428000826263
+    },
+    {
+      "method": "source_only",
+      "filter_strategy": "",
+      "anomaly_type": "DM_watervalve_open_midnight",
+      "anomaly_count": 3,
+      "low_support": true,
+      "precision": 0.01948051948051948,
+      "recall": 1.0,
+      "f1": 0.03821656050955414,
+      "auroc": 0.5568783068783069,
+      "auprc": 0.017079811722668866,
+      "mean_score_normal": 3.0046156813471034,
+      "mean_score_anomaly": 3.0169688927748446,
+      "score_margin": 0.012353211427741151
+    },
+    {
+      "method": "source_only",
+      "filter_strategy": "",
+      "anomaly_type": "DD_microwave_long_time",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 3.0046156813471034,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_plus_raw_synthetic",
+      "filter_strategy": "no_filter",
+      "anomaly_type": "SD_light_flickering",
+      "anomaly_count": 37,
+      "low_support": false,
+      "precision": 0.04938271604938271,
+      "recall": 0.10810810810810811,
+      "f1": 0.06779661016949153,
+      "auroc": 0.42760617760617764,
+      "auprc": 0.11286844332060082,
+      "mean_score_normal": 1.3499311716503348,
+      "mean_score_anomaly": 0.7678097389838512,
+      "score_margin": -0.5821214326664836
+    },
+    {
+      "method": "source_plus_raw_synthetic",
+      "filter_strategy": "no_filter",
+      "anomaly_type": "SD_camera_flickering",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 1.3499311716503348,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_plus_raw_synthetic",
+      "filter_strategy": "no_filter",
+      "anomaly_type": "SD_tv_flickering",
+      "anomaly_count": 6,
+      "low_support": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "auroc": 0.4444444444444444,
+      "auprc": 0.02612283449492752,
+      "mean_score_normal": 1.3499311716503348,
+      "mean_score_anomaly": 0.7448902292101974,
+      "score_margin": -0.6050409424401374
+    },
+    {
+      "method": "source_plus_raw_synthetic",
+      "filter_strategy": "no_filter",
+      "anomaly_type": "MD_camera_off_while_lock",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 1.3499311716503348,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_plus_raw_synthetic",
+      "filter_strategy": "no_filter",
+      "anomaly_type": "MD_window_open_while_lock",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 1.3499311716503348,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_plus_raw_synthetic",
+      "filter_strategy": "no_filter",
+      "anomaly_type": "DM_window_open_midnight",
+      "anomaly_count": 188,
+      "low_support": false,
+      "precision": 0.15384615384615385,
+      "recall": 0.07446808510638298,
+      "f1": 0.10035842293906809,
+      "auroc": 0.2835612968591692,
+      "auprc": 0.3192175785922799,
+      "mean_score_normal": 1.3499311716503348,
+      "mean_score_anomaly": 0.35415604698880926,
+      "score_margin": -0.9957751246615256
+    },
+    {
+      "method": "source_plus_raw_synthetic",
+      "filter_strategy": "no_filter",
+      "anomaly_type": "DM_watervalve_open_midnight",
+      "anomaly_count": 3,
+      "low_support": true,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "auroc": 0.4735449735449736,
+      "auprc": 0.014555598132651,
+      "mean_score_normal": 1.3499311716503348,
+      "mean_score_anomaly": 0.9301445119291465,
+      "score_margin": -0.41978665972118834
+    },
+    {
+      "method": "source_plus_raw_synthetic",
+      "filter_strategy": "no_filter",
+      "anomaly_type": "DD_microwave_long_time",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 1.3499311716503348,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_plus_tof_synthetic",
+      "filter_strategy": "iqr_1.5",
+      "anomaly_type": "SD_light_flickering",
+      "anomaly_count": 37,
+      "low_support": false,
+      "precision": 0.12195121951219512,
+      "recall": 0.13513513513513514,
+      "f1": 0.1282051282051282,
+      "auroc": 0.5524453024453024,
+      "auprc": 0.13726232050692566,
+      "mean_score_normal": 1.0027742859003028,
+      "mean_score_anomaly": 0.8779171620639706,
+      "score_margin": -0.12485712383633218
+    },
+    {
+      "method": "source_plus_tof_synthetic",
+      "filter_strategy": "iqr_1.5",
+      "anomaly_type": "SD_camera_flickering",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 1.0027742859003028,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_plus_tof_synthetic",
+      "filter_strategy": "iqr_1.5",
+      "anomaly_type": "SD_tv_flickering",
+      "anomaly_count": 6,
+      "low_support": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "auroc": 0.656084656084656,
+      "auprc": 0.041044967254910886,
+      "mean_score_normal": 1.0027742859003028,
+      "mean_score_anomaly": 0.697272287626881,
+      "score_margin": -0.30550199827342184
+    },
+    {
+      "method": "source_plus_tof_synthetic",
+      "filter_strategy": "iqr_1.5",
+      "anomaly_type": "MD_camera_off_while_lock",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 1.0027742859003028,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_plus_tof_synthetic",
+      "filter_strategy": "iqr_1.5",
+      "anomaly_type": "MD_window_open_while_lock",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 1.0027742859003028,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_plus_tof_synthetic",
+      "filter_strategy": "iqr_1.5",
+      "anomaly_type": "DM_window_open_midnight",
+      "anomaly_count": 188,
+      "low_support": false,
+      "precision": 0.35714285714285715,
+      "recall": 0.10638297872340426,
+      "f1": 0.16393442622950818,
+      "auroc": 0.31212006079027355,
+      "auprc": 0.33788152881163447,
+      "mean_score_normal": 1.0027742859003028,
+      "mean_score_anomaly": 0.35304753179175946,
+      "score_margin": -0.6497267541085434
+    },
+    {
+      "method": "source_plus_tof_synthetic",
+      "filter_strategy": "iqr_1.5",
+      "anomaly_type": "DM_watervalve_open_midnight",
+      "anomaly_count": 3,
+      "low_support": true,
+      "precision": 0.05263157894736842,
+      "recall": 0.6666666666666666,
+      "f1": 0.09756097560975609,
+      "auroc": 0.8637566137566137,
+      "auprc": 0.05317693059628543,
+      "mean_score_normal": 1.0027742859003028,
+      "mean_score_anomaly": 2.2959844341471634,
+      "score_margin": 1.2932101482468605
+    },
+    {
+      "method": "source_plus_tof_synthetic",
+      "filter_strategy": "iqr_1.5",
+      "anomaly_type": "DD_microwave_long_time",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 1.0027742859003028,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_plus_causal_tof_synthetic",
+      "filter_strategy": "relaxed_causal_keep_90_percent",
+      "anomaly_type": "SD_light_flickering",
+      "anomaly_count": 37,
+      "low_support": false,
+      "precision": 0.125,
+      "recall": 0.13513513513513514,
+      "f1": 0.12987012987012989,
+      "auroc": 0.5808665808665809,
+      "auprc": 0.1520293563172996,
+      "mean_score_normal": 1.0329782332810824,
+      "mean_score_anomaly": 1.2100444484283492,
+      "score_margin": 0.17706621514726684
+    },
+    {
+      "method": "source_plus_causal_tof_synthetic",
+      "filter_strategy": "relaxed_causal_keep_90_percent",
+      "anomaly_type": "SD_camera_flickering",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 1.0329782332810824,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_plus_causal_tof_synthetic",
+      "filter_strategy": "relaxed_causal_keep_90_percent",
+      "anomaly_type": "SD_tv_flickering",
+      "anomaly_count": 6,
+      "low_support": false,
+      "precision": 0.07894736842105263,
+      "recall": 0.5,
+      "f1": 0.13636363636363635,
+      "auroc": 0.8346560846560847,
+      "auprc": 0.08084478505990134,
+      "mean_score_normal": 1.0329782332810824,
+      "mean_score_anomaly": 2.045319271848529,
+      "score_margin": 1.0123410385674467
+    },
+    {
+      "method": "source_plus_causal_tof_synthetic",
+      "filter_strategy": "relaxed_causal_keep_90_percent",
+      "anomaly_type": "MD_camera_off_while_lock",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 1.0329782332810824,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_plus_causal_tof_synthetic",
+      "filter_strategy": "relaxed_causal_keep_90_percent",
+      "anomaly_type": "MD_window_open_while_lock",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 1.0329782332810824,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "source_plus_causal_tof_synthetic",
+      "filter_strategy": "relaxed_causal_keep_90_percent",
+      "anomaly_type": "DM_window_open_midnight",
+      "anomaly_count": 188,
+      "low_support": false,
+      "precision": 0.3,
+      "recall": 0.0797872340425532,
+      "f1": 0.12605042016806722,
+      "auroc": 0.28923927727119214,
+      "auprc": 0.32459865447656083,
+      "mean_score_normal": 1.0329782332810824,
+      "mean_score_anomaly": 0.274149359877604,
+      "score_margin": -0.7588288734034784
+    },
+    {
+      "method": "source_plus_causal_tof_synthetic",
+      "filter_strategy": "relaxed_causal_keep_90_percent",
+      "anomaly_type": "DM_watervalve_open_midnight",
+      "anomaly_count": 3,
+      "low_support": true,
+      "precision": 0.027777777777777776,
+      "recall": 0.3333333333333333,
+      "f1": 0.05128205128205128,
+      "auroc": 0.8399470899470899,
+      "auprc": 0.04590571351453206,
+      "mean_score_normal": 1.0329782332810824,
+      "mean_score_anomaly": 2.0692084615285826,
+      "score_margin": 1.0362302282475002
+    },
+    {
+      "method": "source_plus_causal_tof_synthetic",
+      "filter_strategy": "relaxed_causal_keep_90_percent",
+      "anomaly_type": "DD_microwave_long_time",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 1.0329782332810824,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "oracle_target",
+      "filter_strategy": "",
+      "anomaly_type": "SD_light_flickering",
+      "anomaly_count": 37,
+      "low_support": false,
+      "precision": 0.5227272727272727,
+      "recall": 0.6216216216216216,
+      "f1": 0.5679012345679012,
+      "auroc": 0.9031531531531531,
+      "auprc": 0.4651199284276284,
+      "mean_score_normal": 0.33342651104289345,
+      "mean_score_anomaly": 2.266968775249153,
+      "score_margin": 1.9335422642062596
+    },
+    {
+      "method": "oracle_target",
+      "filter_strategy": "",
+      "anomaly_type": "SD_camera_flickering",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 0.33342651104289345,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "oracle_target",
+      "filter_strategy": "",
+      "anomaly_type": "SD_tv_flickering",
+      "anomaly_count": 6,
+      "low_support": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "auroc": 0.875,
+      "auprc": 0.10165414863872088,
+      "mean_score_normal": 0.33342651104289345,
+      "mean_score_anomaly": 1.4453014231554917,
+      "score_margin": 1.1118749121125981
+    },
+    {
+      "method": "oracle_target",
+      "filter_strategy": "",
+      "anomaly_type": "MD_camera_off_while_lock",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 0.33342651104289345,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "oracle_target",
+      "filter_strategy": "",
+      "anomaly_type": "MD_window_open_while_lock",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 0.33342651104289345,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    },
+    {
+      "method": "oracle_target",
+      "filter_strategy": "",
+      "anomaly_type": "DM_window_open_midnight",
+      "anomaly_count": 188,
+      "low_support": false,
+      "precision": 0.3225806451612903,
+      "recall": 0.05319148936170213,
+      "f1": 0.09132420091324202,
+      "auroc": 0.5889268828098615,
+      "auprc": 0.44968101921928905,
+      "mean_score_normal": 0.33342651104289345,
+      "mean_score_anomaly": 0.28907081530763823,
+      "score_margin": -0.04435569573525522
+    },
+    {
+      "method": "oracle_target",
+      "filter_strategy": "",
+      "anomaly_type": "DM_watervalve_open_midnight",
+      "anomaly_count": 3,
+      "low_support": true,
+      "precision": 0.125,
+      "recall": 1.0,
+      "f1": 0.2222222222222222,
+      "auroc": 0.9894179894179895,
+      "auprc": 0.45833333333333326,
+      "mean_score_normal": 0.33342651104289345,
+      "mean_score_anomaly": 5.047283959817494,
+      "score_margin": 4.7138574487746006
+    },
+    {
+      "method": "oracle_target",
+      "filter_strategy": "",
+      "anomaly_type": "DD_microwave_long_time",
+      "anomaly_count": 0,
+      "low_support": true,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "auroc": null,
+      "auprc": null,
+      "mean_score_normal": 0.33342651104289345,
+      "mean_score_anomaly": null,
+      "score_margin": null
+    }
+  ],
+  "target_labeled_report": {
+    "dataset": "fr",
+    "target_context": "spring",
+    "canonical_reference_path": "/home/heyang/projects/CausalGenGuard/outputs/processed/fr_sequences_canonical.jsonl",
+    "canonical_reference_count": 100,
+    "source_pool_count": 500,
+    "real_target_normal_source_count": 252,
+    "synthetic_target_normal_source_count": 500,
+    "normal_count": 500,
+    "anomaly_count": 234,
+    "max_normal_bound": 500,
+    "max_anomaly_bound": 500,
+    "candidate_count": {
+      "SD_light_flickering": 37,
+      "SD_camera_flickering": 0,
+      "SD_tv_flickering": 6,
+      "MD_camera_off_while_lock": 0,
+      "MD_window_open_while_lock": 0,
+      "DM_window_open_midnight": 188,
+      "DM_watervalve_open_midnight": 3,
+      "DD_microwave_long_time": 0
+    },
+    "injectable_anomaly_types": [
+      "SD_light_flickering",
+      "SD_tv_flickering",
+      "DM_window_open_midnight",
+      "DM_watervalve_open_midnight"
+    ],
+    "per_anomaly_type_success": {
+      "SD_light_flickering": 37,
+      "SD_camera_flickering": 0,
+      "SD_tv_flickering": 6,
+      "MD_camera_off_while_lock": 0,
+      "MD_window_open_while_lock": 0,
+      "DM_window_open_midnight": 188,
+      "DM_watervalve_open_midnight": 3,
+      "DD_microwave_long_time": 0
+    },
+    "skipped_type_count": {
+      "SD_camera_flickering": 0,
+      "MD_camera_off_while_lock": 0,
+      "MD_window_open_while_lock": 0,
+      "DD_microwave_long_time": 0
+    },
+    "scan_skipped_reasons": {
+      "SD_light_flickering": {
+        "control_not_found:light": 463
+      },
+      "SD_camera_flickering": {
+        "control_not_found:camera": 500
+      },
+      "SD_tv_flickering": {
+        "control_not_found:tv": 494
+      },
+      "MD_camera_off_while_lock": {
+        "required_control_not_found:lock_or_camera_off": 500
+      },
+      "MD_window_open_while_lock": {
+        "required_control_not_found:lock_or_window_open": 500
+      },
+      "DM_window_open_midnight": {
+        "control_not_found:window_open": 312
+      },
+      "DM_watervalve_open_midnight": {
+        "control_not_found:watervalve_open": 497
+      },
+      "DD_microwave_long_time": {
+        "control_not_found:microwave": 500
+      }
+    },
+    "generation_failure_count": 0,
+    "generation_failures": [],
+    "injected": [
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000001",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "split_test_000076",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "split_test_000080",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "split_test_000064",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000046",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch off"
+      },
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000110",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000081",
+        "anomaly_type": "SD_tv_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Television:switch on"
+      },
+      {
+        "sequence_id": "generation_SPPC_th=0.917_gpt-4o_seq_000036",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "trn_000028",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "trn_000082",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000077",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      },
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000010",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      },
+      {
+        "sequence_id": "trn_000012",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch off"
+      },
+      {
+        "sequence_id": "test_000041",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "split_test_000012",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "generation_SPPC_th=0.917_gpt-4o_seq_000011",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "split_test_000004",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000035",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000032",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      },
+      {
+        "sequence_id": "trn_000102",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000039",
+        "anomaly_type": "DM_watervalve_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "trn_000005",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "trn_000090",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "split_test_000074",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "generation_SPPC_th=0.917_gpt-4o_seq_000024",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch on"
+      },
+      {
+        "sequence_id": "trn_000030",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000099",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000063",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "trn_000027",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000124",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "generation_SPPC_th=0.917_gpt-4o_seq_000023",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "trn_000000",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "trn_000041",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000077",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000052",
+        "anomaly_type": "SD_light_flickering",
+        "status": "injected",
+        "operation": "flicker",
+        "control_id": "Light:switch off"
+      },
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000014",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "trn_000078",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000038",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000100",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000131",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000026",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000057",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "generation_SPPC_th=0.917_gpt-4o_seq_000000",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "trn_000037",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000061",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "trn_000002",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "split_test_000065",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000020",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "trn_000007",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      },
+      {
+        "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000013",
+        "anomaly_type": "DM_window_open_midnight",
+        "status": "injected"
+      }
+    ],
+    "seed": 1042,
+    "notes": [
+      "Only anomaly types with candidate_count > 0 are injected.",
+      "The target labeled set is bounded to at most 500 normal and 500 anomaly sequences for smoke-test scale."
+    ]
+  }
+}

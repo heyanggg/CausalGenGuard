@@ -1,0 +1,346 @@
+{
+  "dataset": "fr",
+  "target_context": "spring",
+  "canonical_reference_path": "/home/heyang/projects/CausalGenGuard/outputs/processed/fr_sequences_canonical.jsonl",
+  "canonical_reference_count": 100,
+  "source_pool_count": 500,
+  "real_target_normal_source_count": 252,
+  "synthetic_target_normal_source_count": 500,
+  "normal_count": 500,
+  "anomaly_count": 234,
+  "max_normal_bound": 500,
+  "max_anomaly_bound": 500,
+  "candidate_count": {
+    "SD_light_flickering": 37,
+    "SD_camera_flickering": 0,
+    "SD_tv_flickering": 6,
+    "MD_camera_off_while_lock": 0,
+    "MD_window_open_while_lock": 0,
+    "DM_window_open_midnight": 188,
+    "DM_watervalve_open_midnight": 3,
+    "DD_microwave_long_time": 0
+  },
+  "injectable_anomaly_types": [
+    "SD_light_flickering",
+    "SD_tv_flickering",
+    "DM_window_open_midnight",
+    "DM_watervalve_open_midnight"
+  ],
+  "per_anomaly_type_success": {
+    "SD_light_flickering": 37,
+    "SD_camera_flickering": 0,
+    "SD_tv_flickering": 6,
+    "MD_camera_off_while_lock": 0,
+    "MD_window_open_while_lock": 0,
+    "DM_window_open_midnight": 188,
+    "DM_watervalve_open_midnight": 3,
+    "DD_microwave_long_time": 0
+  },
+  "skipped_type_count": {
+    "SD_camera_flickering": 0,
+    "MD_camera_off_while_lock": 0,
+    "MD_window_open_while_lock": 0,
+    "DD_microwave_long_time": 0
+  },
+  "scan_skipped_reasons": {
+    "SD_light_flickering": {
+      "control_not_found:light": 463
+    },
+    "SD_camera_flickering": {
+      "control_not_found:camera": 500
+    },
+    "SD_tv_flickering": {
+      "control_not_found:tv": 494
+    },
+    "MD_camera_off_while_lock": {
+      "required_control_not_found:lock_or_camera_off": 500
+    },
+    "MD_window_open_while_lock": {
+      "required_control_not_found:lock_or_window_open": 500
+    },
+    "DM_window_open_midnight": {
+      "control_not_found:window_open": 312
+    },
+    "DM_watervalve_open_midnight": {
+      "control_not_found:watervalve_open": 497
+    },
+    "DD_microwave_long_time": {
+      "control_not_found:microwave": 500
+    }
+  },
+  "generation_failure_count": 0,
+  "generation_failures": [],
+  "injected": [
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000001",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "split_test_000076",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "split_test_000080",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "split_test_000064",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000046",
+      "anomaly_type": "SD_light_flickering",
+      "status": "injected",
+      "operation": "flicker",
+      "control_id": "Light:switch off"
+    },
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000110",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000081",
+      "anomaly_type": "SD_tv_flickering",
+      "status": "injected",
+      "operation": "flicker",
+      "control_id": "Television:switch on"
+    },
+    {
+      "sequence_id": "generation_SPPC_th=0.917_gpt-4o_seq_000036",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "trn_000028",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "trn_000082",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000077",
+      "anomaly_type": "SD_light_flickering",
+      "status": "injected",
+      "operation": "flicker",
+      "control_id": "Light:switch on"
+    },
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000010",
+      "anomaly_type": "SD_light_flickering",
+      "status": "injected",
+      "operation": "flicker",
+      "control_id": "Light:switch on"
+    },
+    {
+      "sequence_id": "trn_000012",
+      "anomaly_type": "SD_light_flickering",
+      "status": "injected",
+      "operation": "flicker",
+      "control_id": "Light:switch off"
+    },
+    {
+      "sequence_id": "test_000041",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "split_test_000012",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "generation_SPPC_th=0.917_gpt-4o_seq_000011",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "split_test_000004",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000035",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000032",
+      "anomaly_type": "SD_light_flickering",
+      "status": "injected",
+      "operation": "flicker",
+      "control_id": "Light:switch on"
+    },
+    {
+      "sequence_id": "trn_000102",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000039",
+      "anomaly_type": "DM_watervalve_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "trn_000005",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "trn_000090",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "split_test_000074",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "generation_SPPC_th=0.917_gpt-4o_seq_000024",
+      "anomaly_type": "SD_light_flickering",
+      "status": "injected",
+      "operation": "flicker",
+      "control_id": "Light:switch on"
+    },
+    {
+      "sequence_id": "trn_000030",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000099",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000063",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "trn_000027",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000124",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "generation_SPPC_th=0.917_gpt-4o_seq_000023",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "trn_000000",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "trn_000041",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000077",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000052",
+      "anomaly_type": "SD_light_flickering",
+      "status": "injected",
+      "operation": "flicker",
+      "control_id": "Light:switch off"
+    },
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000014",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "trn_000078",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000038",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000100",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "fr_spring_generation_SPPC_th=0.918_gpt-4o_seq_000131",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000026",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000057",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "generation_SPPC_th=0.917_gpt-4o_seq_000000",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "trn_000037",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000061",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "trn_000002",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "split_test_000065",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000020",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "trn_000007",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    },
+    {
+      "sequence_id": "generation_SPPC_th=0.915_gpt-4o_seq_000013",
+      "anomaly_type": "DM_window_open_midnight",
+      "status": "injected"
+    }
+  ],
+  "seed": 1042,
+  "notes": [
+    "Only anomaly types with candidate_count > 0 are injected.",
+    "The target labeled set is bounded to at most 500 normal and 500 anomaly sequences for smoke-test scale."
+  ]
+}
