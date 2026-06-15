@@ -91,6 +91,7 @@ def write_json(path: Path, payload: Dict[str, Any]) -> None:
 
 
 def bounded_bounds(args: argparse.Namespace) -> Dict[str, Any]:
+    seed = int(getattr(args, 'seed', 42))
     return {
         'max_source_train': min(int(args.max_normal), 500),
         'max_source_val': min(200, int(args.max_normal), 500),
@@ -102,7 +103,7 @@ def bounded_bounds(args: argparse.Namespace) -> Dict[str, Any]:
         'epochs': min(int(args.epochs), 3),
         'batch_size': 32,
         'hidden_dim': 64,
-        'seed': 42,
+        'seed': seed,
     }
 
 
@@ -533,7 +534,11 @@ def write_missing_outputs(dataset: str, transition: str, output_dir: Path, rows:
     )
 
 
-def score_success_run(artifacts: Dict[str, Dict[str, Any]], inputs: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], List[Dict[str, Any]]]:
+def score_success_run(
+    artifacts: Dict[str, Dict[str, Any]],
+    inputs: Dict[str, Any],
+    seed: int,
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], List[Dict[str, Any]]]:
     scored = diag.score_artifacts(artifacts, inputs['target_normals'], inputs['labeled_anomalies'])
     for method, method_scores in scored.items():
         method_scores['detector'] = artifacts[method]['detector']
@@ -543,7 +548,7 @@ def score_success_run(artifacts: Dict[str, Dict[str, Any]], inputs: Dict[str, An
     balanced_normals, balanced_anomalies, balanced_report = diag.build_balanced_subset(
         inputs['labeled_normals'],
         inputs['labeled_anomalies'],
-        int(artifacts['source_only']['row'].get('train_info', {}).get('seed', 42) or 42) + 2000,
+        seed + 2000,
     )
     balanced_rows = diag.balanced_rows(artifacts, balanced_normals, balanced_anomalies, source_fpr)
     return per_rows, threshold_rows, [{'balanced_report': balanced_report, 'balanced_rows': balanced_rows}]
@@ -732,6 +737,8 @@ def run(args: argparse.Namespace) -> Dict[str, Any]:
     output_dir = resolve(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     bounds = bounded_bounds(args)
+    seed = int(bounds.get('seed', 42))
+    final.set_seed(seed)
     all_rows: List[Dict[str, Any]] = []
     details: List[Dict[str, Any]] = []
 
@@ -766,7 +773,7 @@ def run(args: argparse.Namespace) -> Dict[str, Any]:
 
             artifacts = train_artifacts(config, bounds, inputs)
             summary_rows = summary_rows_from_artifacts(dataset, transition, inputs, artifacts)
-            per_rows, threshold_rows, balanced_payloads = score_success_run(artifacts, inputs)
+            per_rows, threshold_rows, balanced_payloads = score_success_run(artifacts, inputs, seed)
             balanced_payload = balanced_payloads[0]
             write_dataset_outputs(
                 dataset,
@@ -816,6 +823,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument('--max-anomaly', type=int, default=500)
     parser.add_argument('--max-synthetic', type=int, default=500)
     parser.add_argument('--epochs', type=int, default=3)
+    parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--output-dir', default='outputs/results/context_shift_multidataset')
     return parser
 
