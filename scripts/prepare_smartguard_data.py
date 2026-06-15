@@ -33,7 +33,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument('--dataset', default='fr', choices=['fr', 'sp', 'an'], help='SmartGuard dataset name.')
     parser.add_argument(
         '--output',
-        default='outputs/processed/fr_sequences.jsonl',
+        default='outputs/processed/fr_sequences_canonical.jsonl',
         help='Output JSONL path relative to CausalGenGuard or absolute.',
     )
     parser.add_argument('--limit', type=int, default=None, help='Optional maximum number of sequences to write for smoke tests.')

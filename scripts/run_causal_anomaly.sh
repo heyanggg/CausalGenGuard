@@ -7,7 +7,7 @@ cat <<'EOF'
 Example causal anomaly workflow:
 
 1. Prepare normal SmartGuard or SmartGen sequences:
-   python3 scripts/prepare_smartguard_data.py --smartguard-root ../SmartGuard --dataset fr --output outputs/processed/fr_sequences.jsonl
+   python3 scripts/prepare_smartguard_data.py --smartguard-root ../SmartGuard --dataset fr --output outputs/processed/fr_sequences_canonical.jsonl
    python3 scripts/prepare_smartgen_data.py --smartgen-root ../SmartGen --dataset fr --transition ST --output outputs/synthetic/fr_ST.jsonl --apply-causal-tof
 
 2. Inject causal anomalies from a small Python driver or notebook using:

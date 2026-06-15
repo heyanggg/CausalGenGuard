@@ -63,3 +63,4 @@ outputs/checkpoints/
 outputs/logs/*.log
 outputs/logs/*_help.txt
 outputs/logs/*_STACK.log
+outputs/logs/

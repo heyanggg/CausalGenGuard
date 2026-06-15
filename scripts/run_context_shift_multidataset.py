@@ -675,7 +675,7 @@ def write_report(path: Path, summary_rows: List[Dict[str, Any]], details: List[D
         f'10. Lowest average target-normal FPR: `{lowest_avg_fpr[0]}` (`{final.format_metric(lowest_avg_fpr[1])}`).',
         f'11. Highest average balanced F1: `{best_avg_balanced[0]}` (`{final.format_metric(best_avg_balanced[1])}`).',
         f'12. Causal-TOF average FPR is lowest among non-oracle methods: `{causal_avg_fpr_lowest_non_oracle}` (`{final.format_metric(avg_fpr.get("source_plus_causal_tof_synthetic"))}`). Including oracle, oracle remains lower.',
-        f'13. Causal-TOF average balanced F1 is highest among non-oracle methods: `{causal_avg_balanced_highest_non_oracle}` (`{final.format_metric(avg_balanced_f1.get("source_plus_causal_tof_synthetic"))}`). Including oracle, `{best_avg_balanced[0]}` is highest.',
+        f'13. Whether Causal-TOF average balanced F1 is highest among non-oracle methods: `{causal_avg_balanced_highest_non_oracle}` (`{final.format_metric(avg_balanced_f1.get("source_plus_causal_tof_synthetic"))}`). Including oracle, `{best_avg_balanced[0]}` is highest.',
         '14. Paper-main-experiment readiness: bounded seasonal results are a usable prototype, but weak/variable anomaly F1 means this is not yet enough as the final paper main experiment.',
         '15. Next transitions: yes, extend to `daytime -> night` and `single -> multiple`; those transitions test different context axes than seasonal weather.',
         '',
@@ -811,7 +811,7 @@ def run(args: argparse.Namespace) -> Dict[str, Any]:
         'details': details,
     }
     write_json(output_dir / 'summary.json', payload)
-    write_report(PROJECT_ROOT / 'outputs/logs/CONTEXT_SHIFT_MULTIDATASET_REPORT.md', all_rows, details, output_dir)
+    write_report(output_dir / 'CONTEXT_SHIFT_MULTIDATASET_REPORT.md', all_rows, details, output_dir)
     return payload
 
 
