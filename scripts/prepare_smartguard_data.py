@@ -84,7 +84,6 @@ def main(argv: list[str] | None = None) -> int:
         write_mapping_files(
             smartguard_mapping,
             mapping_output_dir,
-            report=build_mapping_report(smartguard_mapping),
         )
 
     sequences = load_smartguard_dataset(
