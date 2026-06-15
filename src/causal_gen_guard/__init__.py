@@ -1,6 +1,3 @@
-"""CausalGenGuard package.
+"""CausalGenGuard package for context-shift-aware IoT behavior anomaly detection."""
 
-TODO: Expose stable public APIs after the package layout settles.
-"""
-
-# TODO: Define package version and public imports.
+__version__ = "0.1.0"

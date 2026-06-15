@@ -120,7 +120,8 @@ PYTHONPATH=src python -m pytest -q tests
 Current validated test status:
 
 ```text
-35 passed
+With sibling ../SmartGuard available: 33 passed
+Without sibling ../SmartGuard: 30 passed, 3 skipped
 ```
 
 ---

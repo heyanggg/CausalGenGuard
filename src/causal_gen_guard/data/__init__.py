@@ -1,6 +1,1 @@
-"""Data adapters and behavior-event schema utilities.
-
-TODO: Export finalized data schema and adapter interfaces.
-"""
-
-# TODO: Add public data adapter imports.
+"""Data schemas, SmartGuard adapters, dictionary parsing, and anomaly injection utilities."""
