@@ -5,9 +5,14 @@ import copy
 import random
 import re
 from collections import Counter, defaultdict
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from dataclasses import dataclass
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple
 
 from causal_gen_guard.data.schemas import BehaviorEvent, BehaviorSequence
+
+SOURCE_SEQUENCE_TEMPLATE = "source_sequence_template"
+DICTIONARY_CONTROL_POOL = "dictionary_control_pool"
+FALLBACK_NUMERIC = "fallback_numeric"
 
 SMARTGUARD_ANOMALIES = {
     "SD_light_flickering",
@@ -59,6 +64,16 @@ _SPEC_KEYWORDS = {
     "shower": [("shower", "bath")],
     "microwave": [("microwave", "oven")],
 }
+
+
+@dataclass(frozen=True)
+class _ResolvedControl:
+    control: Any
+    source: str
+    raw_control_id: Optional[int] = None
+
+
+_UNSET = object()
 
 
 def _normalize_text(value: Any) -> str:
@@ -140,6 +155,11 @@ def _matches_groups(control: Any, groups: List[Tuple[str, ...]]) -> bool:
 
 
 def _find_control(sequence: BehaviorSequence, spec_name: str) -> Optional[Any]:
+    resolved = _resolve_control(sequence, spec_name)
+    return resolved.control if resolved is not None else None
+
+
+def _find_sequence_control(sequence: BehaviorSequence, spec_name: str) -> Optional[Any]:
     canonical_controls = _SPEC_CANONICAL_CONTROLS.get(spec_name, ())
     canonical_targets = {_control_key(control) for control in canonical_controls}
     for event in sequence.events:
@@ -154,6 +174,87 @@ def _find_control(sequence: BehaviorSequence, spec_name: str) -> Optional[Any]:
             if _matches_groups(control, groups):
                 return control
     return None
+
+
+def _to_int_or_none(value: Any) -> Optional[int]:
+    if value is None:
+        return None
+    if hasattr(value, "item"):
+        try:
+            value = value.item()
+        except Exception:
+            pass
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _is_canonical_control_name(value: Any) -> bool:
+    if not isinstance(value, str):
+        return False
+    if _is_unknown(value) or _looks_numeric_only(value):
+        return False
+    device, action = _canonical_parts(value)
+    return device is not None and action is not None
+
+
+def _normalize_control_to_id(
+    control_pool: Any = None,
+    control_to_id: Optional[Mapping[Any, Any]] = None,
+) -> Dict[str, Optional[int]]:
+    normalized: Dict[str, Optional[int]] = {}
+    if isinstance(control_pool, Mapping):
+        for key, value in control_pool.items():
+            control = str(key)
+            if _is_canonical_control_name(control):
+                normalized[control] = _to_int_or_none(value)
+    elif control_pool is not None:
+        for value in control_pool:
+            control = str(value)
+            if _is_canonical_control_name(control):
+                normalized.setdefault(control, None)
+
+    if control_to_id:
+        for key, value in control_to_id.items():
+            control = str(key)
+            if _is_canonical_control_name(control):
+                normalized[control] = _to_int_or_none(value)
+    return normalized
+
+
+def _find_pool_control(
+    spec_name: str,
+    control_pool: Any = None,
+    control_to_id: Optional[Mapping[Any, Any]] = None,
+) -> Optional[_ResolvedControl]:
+    pool = _normalize_control_to_id(control_pool=control_pool, control_to_id=control_to_id)
+    if not pool:
+        return None
+
+    for control in _SPEC_CANONICAL_CONTROLS.get(spec_name, ()):
+        if control in pool:
+            return _ResolvedControl(control=control, source=DICTIONARY_CONTROL_POOL, raw_control_id=pool[control])
+
+    groups = _SPEC_KEYWORDS.get(spec_name)
+    if groups is None:
+        return None
+    for control in sorted(pool):
+        if _matches_groups(control, groups):
+            return _ResolvedControl(control=control, source=DICTIONARY_CONTROL_POOL, raw_control_id=pool[control])
+    return None
+
+
+def _resolve_control(
+    sequence: BehaviorSequence,
+    spec_name: str,
+    control_pool: Any = None,
+    control_to_id: Optional[Mapping[Any, Any]] = None,
+) -> Optional[_ResolvedControl]:
+    control = _find_sequence_control(sequence, spec_name)
+    if control is not None:
+        return _ResolvedControl(control=control, source=SOURCE_SEQUENCE_TEMPLATE)
+    return _find_pool_control(spec_name, control_pool=control_pool, control_to_id=control_to_id)
 
 
 def _event_index_for_control(sequence: BehaviorSequence, control: Any) -> Optional[int]:
@@ -190,7 +291,13 @@ def _as_float(value: Any, default: float = 0.0) -> float:
         return default
 
 
-def _clone_event(event: BehaviorEvent, control_id: Any = None, **updates: Any) -> BehaviorEvent:
+def _clone_event(
+    event: BehaviorEvent,
+    control_id: Any = None,
+    raw_control_id: Any = _UNSET,
+    injection_source: Optional[str] = None,
+    **updates: Any,
+) -> BehaviorEvent:
     cloned = copy.deepcopy(event)
     raw_fields = dict(cloned.raw_fields)
     if control_id is not None:
@@ -202,20 +309,104 @@ def _clone_event(event: BehaviorEvent, control_id: Any = None, **updates: Any) -
             raw_fields["action"] = action
             raw_fields["canonical_control"] = str(control_id)
             raw_fields["injected_canonical_control"] = str(control_id)
+        if raw_control_id is not _UNSET:
+            raw_fields["raw_control_id"] = raw_control_id
     for key, value in updates.items():
         setattr(cloned, key, value)
         if key in ("day", "hour", "duration"):
             raw_fields[key] = value
+    if injection_source is not None:
+        raw_fields["injection_source"] = injection_source
     raw_fields["attack_injected"] = True
     cloned.raw_fields = raw_fields
     return cloned
 
 
-def _make_event_like(sequence: BehaviorSequence, control_id: Any, anchor_index: int = 0, **updates: Any) -> BehaviorEvent:
+def _make_event_like(
+    sequence: BehaviorSequence,
+    control_id: Any,
+    anchor_index: int = 0,
+    raw_control_id: Any = _UNSET,
+    injection_source: Optional[str] = None,
+    **updates: Any,
+) -> BehaviorEvent:
     if sequence.events:
         anchor = sequence.events[max(0, min(anchor_index, len(sequence.events) - 1))]
-        return _clone_event(anchor, control_id=control_id, **updates)
-    return BehaviorEvent(control_id=control_id, raw_fields={"attack_injected": True})
+        return _clone_event(
+            anchor,
+            control_id=control_id,
+            raw_control_id=raw_control_id,
+            injection_source=injection_source,
+            **updates,
+        )
+    raw_fields = {"attack_injected": True}
+    device, action = _canonical_parts(control_id)
+    if device is not None and action is not None:
+        raw_fields.update({"canonical_control": str(control_id), "device": device, "action": action})
+    if raw_control_id is not _UNSET:
+        raw_fields["raw_control_id"] = raw_control_id
+    if injection_source is not None:
+        raw_fields["injection_source"] = injection_source
+    return BehaviorEvent(control_id=control_id, raw_fields=raw_fields)
+
+
+def _event_template_index(sequence: BehaviorSequence, resolved: _ResolvedControl) -> Optional[int]:
+    if resolved.source != SOURCE_SEQUENCE_TEMPLATE:
+        return None
+    return _event_index_for_control(sequence, resolved.control)
+
+
+def _make_resolved_event(
+    sequence: BehaviorSequence,
+    resolved: _ResolvedControl,
+    default_anchor_index: int = 0,
+    **updates: Any,
+) -> BehaviorEvent:
+    if resolved.source == DICTIONARY_CONTROL_POOL:
+        return _make_dictionary_event(sequence, resolved, default_anchor_index=default_anchor_index, **updates)
+    template_index = _event_template_index(sequence, resolved)
+    anchor_index = template_index if template_index is not None else default_anchor_index
+    return _make_event_like(
+        sequence,
+        resolved.control,
+        anchor_index=anchor_index,
+        injection_source=resolved.source,
+        **updates,
+    )
+
+
+def _make_dictionary_event(
+    sequence: BehaviorSequence,
+    resolved: _ResolvedControl,
+    default_anchor_index: int = 0,
+    **updates: Any,
+) -> BehaviorEvent:
+    anchor: Optional[BehaviorEvent] = None
+    if sequence.events:
+        anchor = sequence.events[max(0, min(default_anchor_index, len(sequence.events) - 1))]
+    device, action = _canonical_parts(resolved.control)
+    raw_fields = {
+        "canonical_control": str(resolved.control),
+        "injected_canonical_control": str(resolved.control),
+        "device": device,
+        "action": action,
+        "raw_control_id": resolved.raw_control_id,
+        "attack_injected": True,
+        "injection_source": resolved.source,
+    }
+    data = {
+        "timestamp": anchor.timestamp if anchor is not None else None,
+        "day": anchor.day if anchor is not None else None,
+        "hour": anchor.hour if anchor is not None else None,
+        "device_id": device,
+        "control_id": resolved.control,
+        "duration": anchor.duration if anchor is not None else None,
+    }
+    for key, value in updates.items():
+        data[key] = value
+        if key in ("day", "hour", "duration"):
+            raw_fields[key] = value
+    return BehaviorEvent(raw_fields=raw_fields, **data)
 
 
 def _make_sequence(sequence: BehaviorSequence, events: List[BehaviorEvent], anomaly_type: str, operations: List[str]) -> BehaviorSequence:
@@ -244,103 +435,166 @@ def _insert_after(events: List[BehaviorEvent], index: int, new_events: Iterable[
     return list(events[: index + 1]) + list(new_events) + list(events[index + 1 :])
 
 
-def _flicker(sequence: BehaviorSequence, anomaly_type: str, spec_name: str) -> Tuple[Optional[BehaviorSequence], Dict[str, Any]]:
-    control = _find_control(sequence, spec_name)
-    if control is None:
+def _combined_injection_source(*resolved_controls: _ResolvedControl) -> str:
+    if any(resolved.source == DICTIONARY_CONTROL_POOL for resolved in resolved_controls):
+        return DICTIONARY_CONTROL_POOL
+    return SOURCE_SEQUENCE_TEMPLATE
+
+
+def _flicker(
+    sequence: BehaviorSequence,
+    anomaly_type: str,
+    spec_name: str,
+    control_pool: Any = None,
+    control_to_id: Optional[Mapping[Any, Any]] = None,
+) -> Tuple[Optional[BehaviorSequence], Dict[str, Any]]:
+    resolved = _resolve_control(sequence, spec_name, control_pool=control_pool, control_to_id=control_to_id)
+    if resolved is None:
         return _skip(sequence, anomaly_type, f"control_not_found:{spec_name}")
-    index = _event_index_for_control(sequence, control)
+    control = resolved.control
+    index = _event_template_index(sequence, resolved)
     if index is None:
         index = 0
-    repeats = [_make_event_like(sequence, control, anchor_index=index) for _ in range(3)]
+    repeats = [_make_resolved_event(sequence, resolved, default_anchor_index=index) for _ in range(3)]
     events = _insert_after(copy.deepcopy(sequence.events), index, repeats)
     injected = _make_sequence(sequence, events, anomaly_type, [f"flicker:{control}"])
-    return injected, _report(sequence, anomaly_type, "injected", operation="flicker", control_id=control)
+    return injected, _report(
+        sequence,
+        anomaly_type,
+        "injected",
+        operation="flicker",
+        control_id=control,
+        injection_source=resolved.source,
+    )
 
 
-def inject_smartguard_style(sequence: BehaviorSequence, anomaly_type: str) -> Tuple[Optional[BehaviorSequence], Dict[str, Any]]:
+def inject_smartguard_style(
+    sequence: BehaviorSequence,
+    anomaly_type: str,
+    control_pool: Any = None,
+    control_to_id: Optional[Mapping[Any, Any]] = None,
+) -> Tuple[Optional[BehaviorSequence], Dict[str, Any]]:
     if anomaly_type not in SMARTGUARD_ANOMALIES:
         return _skip(sequence, anomaly_type, "unsupported_smartguard_anomaly")
     if not sequence.events:
         return _skip(sequence, anomaly_type, "empty_sequence")
 
     if anomaly_type == "SD_light_flickering":
-        return _flicker(sequence, anomaly_type, "light")
+        return _flicker(sequence, anomaly_type, "light", control_pool=control_pool, control_to_id=control_to_id)
     if anomaly_type == "SD_camera_flickering":
-        return _flicker(sequence, anomaly_type, "camera")
+        return _flicker(sequence, anomaly_type, "camera", control_pool=control_pool, control_to_id=control_to_id)
     if anomaly_type == "SD_tv_flickering":
-        return _flicker(sequence, anomaly_type, "tv")
+        return _flicker(sequence, anomaly_type, "tv", control_pool=control_pool, control_to_id=control_to_id)
 
     events = copy.deepcopy(sequence.events)
 
     if anomaly_type == "MD_window_open_while_lock":
-        lock = _find_control(sequence, "lock")
-        window = _find_control(sequence, "window_open")
+        lock = _resolve_control(sequence, "lock", control_pool=control_pool, control_to_id=control_to_id)
+        window = _resolve_control(sequence, "window_open", control_pool=control_pool, control_to_id=control_to_id)
         if lock is None or window is None:
             return _skip(sequence, anomaly_type, "required_control_not_found:lock_or_window_open")
-        index = _event_index_for_control(sequence, lock) or 0
-        injected_event = _make_event_like(sequence, window, anchor_index=index)
+        source = _combined_injection_source(lock, window)
+        index = _event_template_index(sequence, lock)
+        if index is None:
+            lock_event = _make_resolved_event(sequence, lock, default_anchor_index=0)
+            window_event = _make_resolved_event(sequence, window, default_anchor_index=0)
+            return (
+                _make_sequence(sequence, [lock_event, window_event] + events, anomaly_type, ["window_open_after_lock"]),
+                _report(sequence, anomaly_type, "injected", injection_source=source),
+            )
+        injected_event = _make_resolved_event(sequence, window, default_anchor_index=index)
         return (
             _make_sequence(sequence, _insert_after(events, index, [injected_event]), anomaly_type, ["window_open_after_lock"]),
-            _report(sequence, anomaly_type, "injected"),
+            _report(sequence, anomaly_type, "injected", injection_source=source),
         )
 
     if anomaly_type == "MD_camera_off_while_lock":
-        lock = _find_control(sequence, "lock")
-        camera_off = _find_control(sequence, "camera_off")
+        lock = _resolve_control(sequence, "lock", control_pool=control_pool, control_to_id=control_to_id)
+        camera_off = _resolve_control(sequence, "camera_off", control_pool=control_pool, control_to_id=control_to_id)
         if lock is None or camera_off is None:
             return _skip(sequence, anomaly_type, "required_control_not_found:lock_or_camera_off")
-        index = _event_index_for_control(sequence, lock) or 0
-        injected_event = _make_event_like(sequence, camera_off, anchor_index=index)
+        source = _combined_injection_source(lock, camera_off)
+        index = _event_template_index(sequence, lock)
+        if index is None:
+            lock_event = _make_resolved_event(sequence, lock, default_anchor_index=0)
+            camera_event = _make_resolved_event(sequence, camera_off, default_anchor_index=0)
+            return (
+                _make_sequence(sequence, [lock_event, camera_event] + events, anomaly_type, ["camera_off_after_lock"]),
+                _report(sequence, anomaly_type, "injected", injection_source=source),
+            )
+        injected_event = _make_resolved_event(sequence, camera_off, default_anchor_index=index)
         return (
             _make_sequence(sequence, _insert_after(events, index, [injected_event]), anomaly_type, ["camera_off_after_lock"]),
-            _report(sequence, anomaly_type, "injected"),
+            _report(sequence, anomaly_type, "injected", injection_source=source),
         )
 
     if anomaly_type == "DM_ac_cool_in_winter":
-        ac_cool = _find_control(sequence, "ac_cool")
+        ac_cool = _resolve_control(sequence, "ac_cool", control_pool=control_pool, control_to_id=control_to_id)
         if ac_cool is None:
             return _skip(sequence, anomaly_type, "control_not_found:ac_cool")
-        event = _make_event_like(sequence, ac_cool, anchor_index=0)
+        event = _make_resolved_event(sequence, ac_cool, default_anchor_index=0)
         new_sequence = _make_sequence(sequence, [event] + events, anomaly_type, ["ac_cool_forced_in_winter"])
         new_sequence.context["context_id"] = "winter"
         new_sequence.context["season"] = "winter"
-        return new_sequence, _report(sequence, anomaly_type, "injected")
+        return new_sequence, _report(sequence, anomaly_type, "injected", injection_source=ac_cool.source)
 
     if anomaly_type == "DM_window_open_midnight":
-        control = _find_control(sequence, "window_open")
-        if control is None:
+        resolved = _resolve_control(sequence, "window_open", control_pool=control_pool, control_to_id=control_to_id)
+        if resolved is None:
             return _skip(sequence, anomaly_type, "control_not_found:window_open")
-        event = _make_event_like(sequence, control, anchor_index=0, hour=0)
-        return _make_sequence(sequence, [event] + events, anomaly_type, ["window_open_at_midnight"]), _report(sequence, anomaly_type, "injected")
+        event = _make_resolved_event(sequence, resolved, default_anchor_index=0, hour=0)
+        return (
+            _make_sequence(sequence, [event] + events, anomaly_type, ["window_open_at_midnight"]),
+            _report(sequence, anomaly_type, "injected", injection_source=resolved.source),
+        )
 
     if anomaly_type == "DM_watervalve_open_midnight":
-        control = _find_control(sequence, "watervalve_open")
-        if control is None:
+        resolved = _resolve_control(sequence, "watervalve_open", control_pool=control_pool, control_to_id=control_to_id)
+        if resolved is None:
             return _skip(sequence, anomaly_type, "control_not_found:watervalve_open")
-        event = _make_event_like(sequence, control, anchor_index=0, hour=0)
-        return _make_sequence(sequence, [event] + events, anomaly_type, ["watervalve_open_at_midnight"]), _report(sequence, anomaly_type, "injected")
+        event = _make_resolved_event(sequence, resolved, default_anchor_index=0, hour=0)
+        return (
+            _make_sequence(sequence, [event] + events, anomaly_type, ["watervalve_open_at_midnight"]),
+            _report(sequence, anomaly_type, "injected", injection_source=resolved.source),
+        )
 
     if anomaly_type == "DD_shower_long_time":
-        control = _find_control(sequence, "shower")
-        if control is None:
+        resolved = _resolve_control(sequence, "shower", control_pool=control_pool, control_to_id=control_to_id)
+        if resolved is None:
             return _skip(sequence, anomaly_type, "control_not_found:shower")
-        index = _event_index_for_control(sequence, control)
+        control = resolved.control
+        index = _event_template_index(sequence, resolved)
         if index is None:
-            return _skip(sequence, anomaly_type, "control_not_found:shower")
+            event = _make_resolved_event(sequence, resolved, default_anchor_index=0, duration=120.0)
+            return (
+                _make_sequence(sequence, [event] + events, anomaly_type, [f"long_duration:{control}"]),
+                _report(sequence, anomaly_type, "injected", injection_source=resolved.source),
+            )
         events[index].duration = max(_as_float(events[index].duration, 1.0) * 5.0, 120.0)
-        events[index].raw_fields = {**events[index].raw_fields, "attack_injected": True, "duration_attack": "long_time"}
-        return _make_sequence(sequence, events, anomaly_type, [f"long_duration:{control}"]), _report(sequence, anomaly_type, "injected")
+        events[index].raw_fields = {**events[index].raw_fields, "attack_injected": True, "duration_attack": "long_time", "injection_source": resolved.source}
+        return (
+            _make_sequence(sequence, events, anomaly_type, [f"long_duration:{control}"]),
+            _report(sequence, anomaly_type, "injected", injection_source=resolved.source),
+        )
 
     if anomaly_type == "DD_microwave_long_time":
-        control = _find_control(sequence, "microwave")
-        if control is None:
+        resolved = _resolve_control(sequence, "microwave", control_pool=control_pool, control_to_id=control_to_id)
+        if resolved is None:
             return _skip(sequence, anomaly_type, "control_not_found:microwave")
-        index = _event_index_for_control(sequence, control)
+        control = resolved.control
+        index = _event_template_index(sequence, resolved)
         if index is None:
-            return _skip(sequence, anomaly_type, "control_not_found:microwave")
+            event = _make_resolved_event(sequence, resolved, default_anchor_index=0, duration=120.0)
+            return (
+                _make_sequence(sequence, [event] + events, anomaly_type, [f"long_duration:{control}"]),
+                _report(sequence, anomaly_type, "injected", injection_source=resolved.source),
+            )
         events[index].duration = max(_as_float(events[index].duration, 1.0) * 5.0, 120.0)
-        events[index].raw_fields = {**events[index].raw_fields, "attack_injected": True, "duration_attack": "long_time"}
-        return _make_sequence(sequence, events, anomaly_type, [f"long_duration:{control}"]), _report(sequence, anomaly_type, "injected")
+        events[index].raw_fields = {**events[index].raw_fields, "attack_injected": True, "duration_attack": "long_time", "injection_source": resolved.source}
+        return (
+            _make_sequence(sequence, events, anomaly_type, [f"long_duration:{control}"]),
+            _report(sequence, anomaly_type, "injected", injection_source=resolved.source),
+        )
 
     return _skip(sequence, anomaly_type, "unhandled_smartguard_anomaly")
 
@@ -356,7 +610,13 @@ def _unique_controls(sequence: BehaviorSequence) -> List[Any]:
     return controls
 
 
-def inject_causal_anomaly(sequence: BehaviorSequence, anomaly_type: str) -> Tuple[Optional[BehaviorSequence], Dict[str, Any]]:
+def inject_causal_anomaly(
+    sequence: BehaviorSequence,
+    anomaly_type: str,
+    control_pool: Any = None,
+    control_to_id: Optional[Mapping[Any, Any]] = None,
+) -> Tuple[Optional[BehaviorSequence], Dict[str, Any]]:
+    del control_pool, control_to_id
     if anomaly_type not in CAUSAL_ANOMALIES:
         return _skip(sequence, anomaly_type, "unsupported_causal_anomaly")
     if not sequence.events:

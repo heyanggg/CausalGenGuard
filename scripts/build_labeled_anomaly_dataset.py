@@ -15,9 +15,12 @@ import json
 import random
 from collections import Counter
 from pathlib import Path
-from typing import Iterable, List, Optional, Sequence
+from typing import Any, Iterable, List, Optional, Sequence
 
 from causal_gen_guard.data.attack_injector import (
+    DICTIONARY_CONTROL_POOL,
+    FALLBACK_NUMERIC,
+    SOURCE_SEQUENCE_TEMPLATE,
     inject_causal_anomaly,
     inject_smartguard_style,
 )
@@ -70,6 +73,24 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--per-anomaly-type", type=int, default=1)
     parser.add_argument("--max-sequences", type=int, default=None)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument(
+        "--mapping-dir",
+        type=Path,
+        default=None,
+        help="Directory containing SmartGuard control_to_id.json and/or id_to_control.json.",
+    )
+    parser.add_argument(
+        "--control-to-id",
+        type=Path,
+        default=None,
+        help="Path to control_to_id.json.",
+    )
+    parser.add_argument(
+        "--id-to-control",
+        type=Path,
+        default=None,
+        help="Path to id_to_control.json.",
+    )
     return parser
 
 
@@ -101,6 +122,76 @@ def _normal_copy(seq: BehaviorSequence) -> BehaviorSequence:
     return copied
 
 
+def _to_int_or_none(value: Any) -> Optional[int]:
+    if value is None:
+        return None
+    if hasattr(value, "item"):
+        try:
+            value = value.item()
+        except Exception:
+            pass
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _is_canonical_control(value: Any) -> bool:
+    if not isinstance(value, str):
+        return False
+    text = value.strip()
+    if not text or ":" not in text or text.isdigit():
+        return False
+    device, action = text.split(":", 1)
+    return bool(device and action)
+
+
+def _load_control_to_id_file(path: Optional[Path]) -> dict[str, int]:
+    if path is None or not path.exists():
+        return {}
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(raw, dict):
+        raise ValueError(f"Expected JSON object in {path}")
+    out: dict[str, int] = {}
+    for key, value in raw.items():
+        control = str(key)
+        control_id = _to_int_or_none(value)
+        if _is_canonical_control(control) and control_id is not None:
+            out[control] = control_id
+    return out
+
+
+def _load_id_to_control_file(path: Optional[Path]) -> dict[str, int]:
+    if path is None or not path.exists():
+        return {}
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(raw, dict):
+        raise ValueError(f"Expected JSON object in {path}")
+    out: dict[str, int] = {}
+    for key, value in raw.items():
+        control = str(value)
+        control_id = _to_int_or_none(key)
+        if _is_canonical_control(control) and control_id is not None:
+            out[control] = control_id
+    return out
+
+
+def _load_control_pool(
+    mapping_dir: Optional[Path],
+    control_to_id_path: Optional[Path],
+    id_to_control_path: Optional[Path],
+) -> dict[str, int]:
+    if mapping_dir is not None:
+        control_to_id_path = control_to_id_path or mapping_dir / "control_to_id.json"
+        id_to_control_path = id_to_control_path or mapping_dir / "id_to_control.json"
+
+    control_to_id = _load_control_to_id_file(control_to_id_path)
+    id_to_control = _load_id_to_control_file(id_to_control_path)
+    for control, control_id in id_to_control.items():
+        control_to_id.setdefault(control, control_id)
+    return control_to_id
+
+
 def _dedupe_skipped(items):
     """Deduplicate skipped logs by anomaly type and skipped reason.
 
@@ -127,6 +218,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     rng = random.Random(args.seed)
     normal_sequences = _read_jsonl(Path(args.input_jsonl), limit=args.max_sequences)
+    control_to_id = _load_control_pool(args.mapping_dir, args.control_to_id, args.id_to_control)
 
     output_sequences = [_normal_copy(seq) for seq in normal_sequences]
 
@@ -154,7 +246,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             if family == "causal":
                 injected, log = inject_causal_anomaly(sequence, anomaly_type)
             else:
-                injected, log = inject_smartguard_style(sequence, anomaly_type)
+                injected, log = inject_smartguard_style(
+                    sequence,
+                    anomaly_type,
+                    control_pool=control_to_id,
+                    control_to_id=control_to_id,
+                )
 
             if injected is None:
                 skipped_logs.append(log)
@@ -181,16 +278,28 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         anomaly_type: int(per_anomaly_type_skipped.get(anomaly_type, 0))
         for anomaly_type in args.anomaly_types
     }
+    source_sequence_template_injection_count = sum(
+        1 for log in injected_logs if log.get("injection_source") == SOURCE_SEQUENCE_TEMPLATE
+    )
+    dictionary_control_pool_injection_count = sum(
+        1 for log in injected_logs if log.get("injection_source") == DICTIONARY_CONTROL_POOL
+    )
+    fallback_numeric_injection_count = sum(
+        1 for log in injected_logs if log.get("injection_source") == FALLBACK_NUMERIC
+    )
 
     report = {
         "normal_count": len(normal_sequences),
         "anomaly_count": len(injected_logs),
         "named_injection_success_count": len(injected_logs),
-        "fallback_numeric_injection_count": 0,
+        "source_sequence_template_injection_count": source_sequence_template_injection_count,
+        "dictionary_control_pool_injection_count": dictionary_control_pool_injection_count,
+        "fallback_numeric_injection_count": fallback_numeric_injection_count,
         "skipped_count": len(skipped_logs),
         "per_anomaly_type_success": per_anomaly_type_success,
         "per_anomaly_type_skipped": per_anomaly_type_skipped_full,
         "skipped_reasons": dict(skipped_reasons),
+        "control_pool_size": len(control_to_id),
         "injected": injected_logs,
         "skipped": skipped_logs,
         "seed": args.seed,
