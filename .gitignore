@@ -1,7 +1,7 @@
 # Python cache
 __pycache__/
 *.py[cod]
-*$py.class
+*.pyo
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -10,23 +10,16 @@ __pycache__/
 .venv/
 venv/
 env/
-ENV/
 
-# IDE / OS files
-.vscode/settings.json
+# IDE / OS
+.vscode/
 .idea/
 .DS_Store
 
-# Local secrets
-.env
-.env.*
-*.key
-
 # Logs
 *.log
-outputs/logs/*.log
 
-# Model and binary experiment artifacts
+# Model and binary artifacts
 *.pt
 *.pth
 *.ckpt
@@ -35,7 +28,7 @@ outputs/logs/*.log
 *.pkl
 *.pickle
 
-# Generated project outputs. Keep outputs/.gitkeep only.
+# Generated outputs
 outputs/checkpoints/
 outputs/processed/
 outputs/labels/
@@ -43,14 +36,19 @@ outputs/synthetic/
 outputs/diagnostics/
 outputs/feasibility/
 outputs/figures/
-outputs/mappings/
 outputs/tmp_*
 outputs/results/*.json
 outputs/results/*.csv
 outputs/results/*.md
 outputs/results/explanations/
 
-# Do not ignore curated documentation.
+# Usually generated mapping outputs.
+# Commit only curated mapping examples intentionally.
+outputs/mappings/
+
+# Keep placeholder if needed
+!outputs/.gitkeep
+
+# Keep curated documentation
 !docs/**/*.md
 !paper/**/*.md
-!outputs/.gitkeep
