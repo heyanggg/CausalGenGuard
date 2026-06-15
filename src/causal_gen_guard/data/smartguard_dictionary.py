@@ -1,36 +1,108 @@
-'''Utilities for loading SmartGuard device/control dictionaries.
+"""Utilities for loading SmartGuard device/control dictionaries.
 
-The SmartGuard source dictionaries are Python files. This module parses them
-with ``ast`` so the source project can stay read-only and no source code needs
-to be executed just to recover numeric id mappings.
-'''
-
+The original SmartGuard dictionaries are Python files.  This module parses their
+literal assignments with ``ast`` instead of importing the source project.  That
+keeps SmartGuard read-only and makes the mapping generation deterministic.
+"""
 from __future__ import annotations
 
 import ast
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional
 
-
 KEY_CONTROLS = [
-    'Light:switch on',
-    'Light:switch off',
-    'Camera:switch on',
-    'Camera:switch off',
-    'Television:switch on',
-    'Television:switch off',
-    'SmartLock:lock lock',
-    'SmartLock:lock unlock',
-    'WaterValve:valve open',
-    'WaterValve:valve close',
+    "Light:switch on",
+    "Light:switch off",
+    "Camera:switch on",
+    "Camera:switch off",
+    "Television:switch on",
+    "Television:switch off",
+    "Blind:windowShade open",
+    "SmartLock:lock lock",
+    "SmartLock:lock unlock",
+    "WaterValve:valve open",
+    "WaterValve:valve close",
+    "AirConditioner:setCoolingSetpoint",
+    "Microwave:switch on",
 ]
+
+DEFAULT_DAYOFWEEK_DICT = {
+    "day:Mon": 0,
+    "day:Tue": 1,
+    "day:Wed": 2,
+    "day:Thu": 3,
+    "day:Fri": 4,
+    "day:Sat": 5,
+    "day:Sun": 6,
+}
+
+DEFAULT_HOUR_DICT = {
+    "time:(0~3)": 0,
+    "time:(3~6)": 1,
+    "time:(6~9)": 2,
+    "time:(9~12)": 3,
+    "time:(12~15)": 4,
+    "time:(15~18)": 5,
+    "time:(18~21)": 6,
+    "time:(21~24)": 7,
+}
+
+
+def _literal_assignments(path: Path) -> Dict[str, Any]:
+    text = path.read_text(encoding="utf-8")
+    tree = ast.parse(text, filename=str(path))
+    values: Dict[str, Any] = {}
+    for node in tree.body:
+        if isinstance(node, ast.Assign):
+            try:
+                value = ast.literal_eval(node.value)
+            except Exception:
+                continue
+            for target in node.targets:
+                if isinstance(target, ast.Name):
+                    values[target.id] = value
+        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+            try:
+                values[node.target.id] = ast.literal_eval(node.value)
+            except Exception:
+                continue
+    return values
+
+
+def _to_int(value: Any) -> int:
+    if hasattr(value, "item"):
+        value = value.item()
+    return int(value)
+
+
+def _normalize_mapping(mapping: Optional[Mapping[Any, Any]]) -> Dict[str, int]:
+    if not mapping:
+        return {}
+    out: Dict[str, int] = {}
+    for key, value in mapping.items():
+        out[str(key)] = _to_int(value)
+    return out
+
+
+def invert_dict(mapping: Mapping[Any, Any]) -> Dict[int, str]:
+    """Invert a name->id mapping into int id->name."""
+    return {_to_int(value): str(key) for key, value in mapping.items()}
+
+
+def _sort_name_to_id(mapping: Mapping[str, int]) -> Dict[str, int]:
+    return {key: int(mapping[key]) for key in sorted(mapping)}
+
+
+def _sort_id_to_name(mapping: Mapping[int, str]) -> Dict[str, str]:
+    return {str(key): mapping[key] for key in sorted(mapping)}
 
 
 @dataclass(frozen=True)
 class SmartGuardDictionary:
-    '''Bidirectional SmartGuard id mappings for one dataset.'''
+    """Bidirectional SmartGuard mappings for one dataset."""
 
     dataset: str
     source_path: Path
@@ -38,166 +110,159 @@ class SmartGuardDictionary:
     id_to_device: Dict[int, str]
     control_to_id: Dict[str, int]
     id_to_control: Dict[int, str]
+    day_to_id: Dict[str, int]
+    id_to_day: Dict[int, str]
+    hour_to_id: Dict[str, int]
+    id_to_hour: Dict[int, str]
+
+    @property
+    def dictionary_path(self) -> Path:
+        """Backward-compatible alias used by older scripts/tests."""
+        return self.source_path
 
     def json_payloads(self) -> Dict[str, Dict[str, Any]]:
-        '''Return JSON-ready mapping payloads with deterministic ordering.'''
         return {
-            'device_to_id': _sort_name_to_id(self.device_to_id),
-            'id_to_device': _sort_id_to_name(self.id_to_device),
-            'control_to_id': _sort_name_to_id(self.control_to_id),
-            'id_to_control': _sort_id_to_name(self.id_to_control),
+            "device_to_id": _sort_name_to_id(self.device_to_id),
+            "id_to_device": _sort_id_to_name(self.id_to_device),
+            "control_to_id": _sort_name_to_id(self.control_to_id),
+            "id_to_control": _sort_id_to_name(self.id_to_control),
+            "day_to_id": _sort_name_to_id(self.day_to_id),
+            "id_to_day": _sort_id_to_name(self.id_to_day),
+            "hour_to_id": _sort_name_to_id(self.hour_to_id),
+            "id_to_hour": _sort_id_to_name(self.id_to_hour),
         }
 
 
-def dictionary_path(smartguard_root: str | Path, dataset: str) -> Path:
-    '''Resolve the SmartGuard dictionary.py path for a dataset.'''
-    root = Path(smartguard_root).expanduser().resolve()
-    dataset = dataset.lower()
-    candidates = [
-        root / 'data' / 'data' / dataset / 'dictionary.py',
-        root / 'data' / dataset / 'dictionary.py',
-        root / dataset / 'dictionary.py',
-        root / 'dictionary.py',
-    ]
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
-    joined = ', '.join(str(candidate) for candidate in candidates)
-    raise FileNotFoundError(f'No SmartGuard dictionary.py found for dataset {dataset!r}; checked {joined}')
+def load_dictionary_py(path: str | Path) -> Dict[str, Dict[str, int]]:
+    """Load literal dictionaries from a SmartGuard dictionary.py file."""
+    path = Path(path)
+    values = _literal_assignments(path)
+    return {
+        "dayofweek_dict": _normalize_mapping(values.get("dayofweek_dict") or DEFAULT_DAYOFWEEK_DICT),
+        "hour_dict": _normalize_mapping(values.get("hour_dict") or DEFAULT_HOUR_DICT),
+        "device_dict": _normalize_mapping(values.get("device_dict")),
+        "device_control_dict": _normalize_mapping(values.get("device_control_dict")),
+    }
+
+
+def parse_smartguard_dictionary(path: str | Path, dataset: str = "unknown") -> SmartGuardDictionary:
+    path = Path(path)
+    raw = load_dictionary_py(path)
+    device_to_id = raw["device_dict"]
+    control_to_id = raw["device_control_dict"]
+    day_to_id = raw["dayofweek_dict"] or DEFAULT_DAYOFWEEK_DICT
+    hour_to_id = raw["hour_dict"] or DEFAULT_HOUR_DICT
+    return SmartGuardDictionary(
+        dataset=dataset,
+        source_path=path,
+        device_to_id=device_to_id,
+        id_to_device=invert_dict(device_to_id),
+        control_to_id=control_to_id,
+        id_to_control=invert_dict(control_to_id),
+        day_to_id=day_to_id,
+        id_to_day=invert_dict(day_to_id),
+        hour_to_id=hour_to_id,
+        id_to_hour=invert_dict(hour_to_id),
+    )
 
 
 def load_smartguard_dictionary(smartguard_root: str | Path, dataset: str) -> SmartGuardDictionary:
-    '''Load one SmartGuard dataset dictionary from a SmartGuard project root.'''
-    path = dictionary_path(smartguard_root, dataset)
-    return parse_smartguard_dictionary(path, dataset=dataset.lower())
+    dataset = dataset.lower()
+    path = Path(smartguard_root) / "data" / "data" / dataset / "dictionary.py"
+    if not path.exists():
+        raise FileNotFoundError(f"SmartGuard dictionary not found: {path}")
+    return parse_smartguard_dictionary(path, dataset=dataset)
 
 
-def parse_smartguard_dictionary(path: str | Path, dataset: Optional[str] = None) -> SmartGuardDictionary:
-    '''Parse device_dict and device_control_dict from a SmartGuard dictionary.py.'''
-    source_path = Path(path).expanduser().resolve()
-    text = source_path.read_text(encoding='utf-8')
-    tree = ast.parse(text, filename=str(source_path))
+def load_smartguard_mappings(smartguard_root: str | Path, dataset: str) -> SmartGuardDictionary:
+    return load_smartguard_dictionary(smartguard_root, dataset)
 
-    device_to_id = _extract_name_to_id(tree, 'device_dict')
-    control_to_id = _extract_name_to_id(tree, 'device_control_dict')
-    id_to_device = _invert_unique(device_to_id, 'device_dict')
-    id_to_control = _invert_unique(control_to_id, 'device_control_dict')
 
-    return SmartGuardDictionary(
-        dataset=dataset or source_path.parent.name,
-        source_path=source_path,
-        device_to_id=device_to_id,
-        id_to_device=id_to_device,
-        control_to_id=control_to_id,
-        id_to_control=id_to_control,
-    )
+def parse_control_name(control_name: str) -> Dict[str, str]:
+    text = str(control_name)
+    if ":" in text:
+        device, action = text.split(":", 1)
+    else:
+        device, action = "unknown", text
+    return {
+        "device": device,
+        "action": action,
+        "canonical_control": f"{device}:{action}" if device != "unknown" else text,
+    }
+
+
+def _norm(text: Any) -> str:
+    return re.sub(r"[^a-z0-9]+", "", str(text).lower())
+
+
+def lookup_control_id(control_to_id: Mapping[str, int], canonical_control: str, fuzzy: bool = False) -> Dict[str, Any]:
+    if canonical_control in control_to_id:
+        return {
+            "control_id": int(control_to_id[canonical_control]),
+            "matched_control": canonical_control,
+            "confidence": "exact",
+        }
+    if fuzzy:
+        target = _norm(canonical_control)
+        for name, value in control_to_id.items():
+            if _norm(name) == target:
+                return {
+                    "control_id": int(value),
+                    "matched_control": name,
+                    "confidence": "normalized",
+                }
+    return {"control_id": None, "matched_control": None, "confidence": "missing"}
 
 
 def build_mapping_report(
     mapping: SmartGuardDictionary,
     key_controls: Optional[Iterable[str]] = None,
 ) -> Dict[str, Any]:
-    '''Build a report describing mapping coverage for key semantic controls.'''
     controls = list(key_controls or KEY_CONTROLS)
-    key_control_report: Dict[str, Dict[str, Any]] = {}
+    key_payload: Dict[str, Dict[str, Any]] = {}
     missing: List[str] = []
     for control in controls:
-        control_id = mapping.control_to_id.get(control)
-        exists = control_id is not None
-        entry: Dict[str, Any] = {'exists': exists}
-        if exists:
-            entry['id'] = control_id
-        else:
+        exists = control in mapping.control_to_id
+        if not exists:
             missing.append(control)
-        key_control_report[control] = entry
-
+        key_payload[control] = {
+            "exists": exists,
+            "id": int(mapping.control_to_id[control]) if exists else None,
+        }
+    all_present = len(missing) == 0
     return {
-        'dataset': mapping.dataset,
-        'source_path': str(mapping.source_path),
-        'device_count': len(mapping.device_to_id),
-        'control_count': len(mapping.control_to_id),
-        'id_to_device_count': len(mapping.id_to_device),
-        'id_to_control_count': len(mapping.id_to_control),
-        'all_key_controls_present': not missing,
-        'missing_key_controls': missing,
-        'key_controls': key_control_report,
+        "dataset": mapping.dataset,
+        "dictionary_path": str(mapping.source_path),
+        "device_count": len(mapping.device_to_id),
+        "control_count": len(mapping.control_to_id),
+        "day_count": len(mapping.day_to_id),
+        "hour_count": len(mapping.hour_to_id),
+        "key_controls": key_payload,
+        "missing_key_controls": missing,
+        "all_key_controls_present": all_present,
+        "can_run_named_smartguard_attacks": all_present,
     }
 
 
 def write_mapping_files(
     mapping: SmartGuardDictionary,
     output_dir: str | Path,
-    report: Optional[Mapping[str, Any]] = None,
-) -> Dict[str, Path]:
-    '''Write mapping JSON files and return their paths.'''
-    output_path = Path(output_dir).expanduser().resolve()
-    output_path.mkdir(parents=True, exist_ok=True)
-
-    payloads: Dict[str, Mapping[str, Any]] = mapping.json_payloads()
-    payloads['mapping_report'] = dict(report or build_mapping_report(mapping))
-
-    written: Dict[str, Path] = {}
-    for stem, payload in payloads.items():
-        path = output_path / f'{stem}.json'
-        path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-        written[stem] = path
-    return written
-
-
-def _extract_name_to_id(tree: ast.Module, variable_name: str) -> Dict[str, int]:
-    value_node: Optional[ast.AST] = None
-    for node in tree.body:
-        if isinstance(node, ast.Assign):
-            for target in node.targets:
-                if isinstance(target, ast.Name) and target.id == variable_name:
-                    value_node = node.value
-        elif isinstance(node, ast.AnnAssign):
-            target = node.target
-            if isinstance(target, ast.Name) and target.id == variable_name:
-                value_node = node.value
-
-    if value_node is None:
-        raise KeyError(f'{variable_name} was not found in SmartGuard dictionary.py')
-
-    try:
-        raw = ast.literal_eval(value_node)
-    except (SyntaxError, ValueError) as exc:
-        raise ValueError(f'{variable_name} must be a literal dictionary') from exc
-
-    return _validate_name_to_id(raw, variable_name)
-
-
-def _validate_name_to_id(raw: Any, variable_name: str) -> Dict[str, int]:
-    if not isinstance(raw, dict):
-        raise TypeError(f'{variable_name} must be a dictionary, got {type(raw).__name__}')
-
-    mapping: Dict[str, int] = {}
-    for name, numeric_id in raw.items():
-        if not isinstance(name, str):
-            raise TypeError(f'{variable_name} contains non-string key {name!r}')
-        if isinstance(numeric_id, bool) or not isinstance(numeric_id, int):
-            raise TypeError(f'{variable_name}[{name!r}] must be an int id, got {numeric_id!r}')
-        mapping[name] = numeric_id
-    return mapping
-
-
-def _invert_unique(name_to_id: Mapping[str, int], variable_name: str) -> Dict[int, str]:
-    id_to_name: Dict[int, str] = {}
-    duplicates: Dict[int, List[str]] = {}
-    for name, numeric_id in name_to_id.items():
-        if numeric_id in id_to_name:
-            duplicates.setdefault(numeric_id, [id_to_name[numeric_id]]).append(name)
-        else:
-            id_to_name[numeric_id] = name
-    if duplicates:
-        details = ', '.join(f'{numeric_id}: {names}' for numeric_id, names in sorted(duplicates.items()))
-        raise ValueError(f'{variable_name} contains duplicate numeric ids: {details}')
-    return id_to_name
-
-
-def _sort_name_to_id(mapping: Mapping[str, int]) -> Dict[str, int]:
-    return {name: numeric_id for name, numeric_id in sorted(mapping.items(), key=lambda item: (item[1], item[0]))}
-
-
-def _sort_id_to_name(mapping: Mapping[int, str]) -> Dict[str, str]:
-    return {str(numeric_id): name for numeric_id, name in sorted(mapping.items())}
+    include_time_mappings: bool = False,
+) -> Dict[str, Any]:
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    payloads = mapping.json_payloads()
+    names = ["device_to_id", "id_to_device", "control_to_id", "id_to_control"]
+    if include_time_mappings:
+        names.extend(["day_to_id", "id_to_day", "hour_to_id", "id_to_hour"])
+    for name in names:
+        (output_dir / f"{name}.json").write_text(
+            json.dumps(payloads[name], ensure_ascii=False, indent=2, sort_keys=True),
+            encoding="utf-8",
+        )
+    report = build_mapping_report(mapping)
+    (output_dir / "mapping_report.json").write_text(
+        json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
+    return report

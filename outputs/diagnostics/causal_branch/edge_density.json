@@ -1,8 +1,0 @@
-{
-  "node_count": 29,
-  "possible_directed_edges": 812,
-  "nonzero_edges": 693,
-  "density": 0.853448275862069,
-  "mean_weight": 0.0027960059233009815,
-  "max_weight": 0.0667446106672287
-}
