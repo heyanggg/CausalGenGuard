@@ -1,6 +1,0 @@
-method,dataset,transition,precision,recall,f1,fpr,fnr,auroc,auprc,threshold,notes
-SmartGuard only,toy,winter->spring,1.0,0.5,0.6666666666666666,0.0,0.5,1.0,1.0,1.3786800327995117,reconstruction score only; SmartGen augmentation disabled by experiment config
-SmartGuard + SmartGen,toy,winter->spring,1.0,0.5,0.6666666666666666,0.0,0.5,1.0,1.0,1.3721892249328276,synthetic target normal augmentation without causal branch
-SmartGuard + Causal,toy,winter->spring,1.0,0.5,0.6666666666666666,0.0,0.5,0.75,0.8333333333333333,0.449553822575236,source normal plus behavior causal graph deviation; SmartGen augmentation disabled by experiment config
-SmartGuard + SmartGen + Causal,toy,winter->spring,1.0,0.5,0.6666666666666666,0.0,0.5,0.75,0.8333333333333333,0.4497011676837399,"SmartGen augmentation and causal branch, no Causal-TOF"
-Full CausalGenGuard + CausalTOF + causal-aware NWRL,toy,winter->spring,0.0,0.0,0.0,0.5,1.0,0.0,0.41666666666666663,0.8048000552093589,Causal-TOF enabled; causal-aware NWRL fine-tune enabled after causal centrality estimation; Causal-TOF filtered synthetic sequences from 4 to 1; causal-aware NWRL fine-tune applied after causal centrality estimation

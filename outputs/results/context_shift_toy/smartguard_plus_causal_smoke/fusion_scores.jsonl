@@ -1,4 +1,0 @@
-{"sequence_id": "toy-0", "label": 0, "anomaly_type": null, "score": -0.3035707714023258, "rec_score": 1.2880589962005615, "causal_score": 0.0399358868598938, "pred": 0, "context_graph": "global"}
-{"sequence_id": "toy-1", "label": 1, "anomaly_type": null, "score": 0.519169939346732, "rec_score": 1.342447280883789, "causal_score": 0.02567748725414276, "pred": 1, "context_graph": "global"}
-{"sequence_id": "toy-2", "label": 0, "anomaly_type": null, "score": 0.05506249420342668, "rec_score": 1.2734545469284058, "causal_score": 0.06333993375301361, "pred": 0, "context_graph": "global"}
-{"sequence_id": "toy-3", "label": 1, "anomaly_type": null, "score": -0.2706589335922191, "rec_score": 1.289496898651123, "causal_score": 0.0399358868598938, "pred": 0, "context_graph": "global"}
