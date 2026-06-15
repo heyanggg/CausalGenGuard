@@ -210,7 +210,7 @@ def mapping_type_for_config(config: Dict[str, Any]) -> str:
         report = json.loads(report_path.read_text(encoding='utf-8'))
     except Exception:
         return 'unknown'
-    return str(report.get('mapping_type') or 'smartguard_numeric')
+    return str(report.get('mapping_type') or 'smartguard_semantic')
 
 
 def train_artifacts(
