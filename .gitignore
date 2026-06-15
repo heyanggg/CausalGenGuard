@@ -52,3 +52,14 @@ outputs/mappings/
 # Keep curated documentation
 !docs/**/*.md
 !paper/**/*.md
+
+# Generated experiment outputs
+outputs/processed/
+outputs/labels/
+outputs/mappings/
+outputs/results/
+outputs/figures/
+outputs/checkpoints/
+outputs/logs/*.log
+outputs/logs/*_help.txt
+outputs/logs/*_STACK.log
