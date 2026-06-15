@@ -727,6 +727,7 @@ def evaluate(
         'recall': None,
         'f1': None,
         'anomaly_f1': None,
+        'fnr': None,
         'auroc': None,
         'auprc': None,
     }
@@ -741,6 +742,7 @@ def evaluate(
                 'recall': metrics['recall'],
                 'f1': metrics['f1'],
                 'anomaly_f1': metrics['f1'],
+                'fnr': metrics['fnr'],
                 'auroc': metrics['auroc'],
                 'auprc': metrics['auprc'],
             }
@@ -1103,6 +1105,7 @@ def write_csv(path: Path, rows: List[Dict[str, Any]]) -> None:
         'recall',
         'f1',
         'anomaly_f1',
+        'fnr',
         'auroc',
         'auprc',
         'adaptation_gain',
@@ -1158,6 +1161,7 @@ def compact_row(row: Dict[str, Any]) -> Dict[str, Any]:
         'recall': row.get('recall'),
         'f1': row.get('f1'),
         'anomaly_f1': row.get('anomaly_f1'),
+        'fnr': row.get('fnr'),
         'auroc': row.get('auroc'),
         'auprc': row.get('auprc'),
         'adaptation_gain': row.get('adaptation_gain'),
@@ -1306,13 +1310,13 @@ def write_final_run_report(path: Path, payload: Dict[str, Any]) -> None:
             '',
         '## Selected Method Results',
         '',
-        '| method | filter_strategy | kept_count | rejected_count | target_normal_fpr | precision | recall | f1 | auroc | auprc | adaptation_gain |',
-        '| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
+        '| method | filter_strategy | kept_count | rejected_count | target_normal_fpr | precision | recall | f1 | fnr | auroc | auprc | adaptation_gain |',
+        '| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
     ]
     )
     for row in selected_rows:
         lines.append(
-            '| {method} | {strategy} | {kept} | {rejected} | {fpr} | {precision} | {recall} | {f1} | {auroc} | {auprc} | {gain} |'.format(
+            '| {method} | {strategy} | {kept} | {rejected} | {fpr} | {precision} | {recall} | {f1} | {fnr} | {auroc} | {auprc} | {gain} |'.format(
                 method=row.get('method'),
                 strategy=row.get('filter_strategy') or '',
                 kept=row.get('kept_count', 0),
@@ -1321,6 +1325,7 @@ def write_final_run_report(path: Path, payload: Dict[str, Any]) -> None:
                 precision=format_metric(row.get('precision')),
                 recall=format_metric(row.get('recall')),
                 f1=format_metric(row.get('f1')),
+                fnr=format_metric(row.get('fnr')),
                 auroc=format_metric(row.get('auroc')),
                 auprc=format_metric(row.get('auprc')),
                 gain=format_metric(row.get('adaptation_gain')),
@@ -1332,13 +1337,13 @@ def write_final_run_report(path: Path, payload: Dict[str, Any]) -> None:
             '',
             '## Filter Strategy Sweep',
             '',
-            '| method | filter_strategy | selected | kept_count | rejected_count | target_normal_fpr | precision | recall | f1 | auroc | auprc | adaptation_gain |',
-            '| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
+            '| method | filter_strategy | selected | kept_count | rejected_count | target_normal_fpr | precision | recall | f1 | fnr | auroc | auprc | adaptation_gain |',
+            '| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
         ]
     )
     for row in sweep_rows:
         lines.append(
-            '| {method} | {strategy} | {selected} | {kept} | {rejected} | {fpr} | {precision} | {recall} | {f1} | {auroc} | {auprc} | {gain} |'.format(
+            '| {method} | {strategy} | {selected} | {kept} | {rejected} | {fpr} | {precision} | {recall} | {f1} | {fnr} | {auroc} | {auprc} | {gain} |'.format(
                 method=row.get('method'),
                 strategy=row.get('filter_strategy') or '',
                 selected='yes' if row.get('selected') else 'no',
@@ -1348,6 +1353,7 @@ def write_final_run_report(path: Path, payload: Dict[str, Any]) -> None:
                 precision=format_metric(row.get('precision')),
                 recall=format_metric(row.get('recall')),
                 f1=format_metric(row.get('f1')),
+                fnr=format_metric(row.get('fnr')),
                 auroc=format_metric(row.get('auroc')),
                 auprc=format_metric(row.get('auprc')),
                 gain=format_metric(row.get('adaptation_gain')),
@@ -1363,6 +1369,7 @@ def write_final_run_report(path: Path, payload: Dict[str, Any]) -> None:
             f"- `precision`: {'available' if payload['target_anomaly_available'] else 'skipped'}.",
             f"- `recall`: {'available' if payload['target_anomaly_available'] else 'skipped'}.",
             f"- `f1`: {'available' if payload['target_anomaly_available'] else 'skipped'}.",
+            f"- `fnr`: {'available' if payload['target_anomaly_available'] else 'skipped'}.",
             f"- `auroc`: {'available' if payload['target_anomaly_available'] else 'skipped'}.",
             f"- `auprc`: {'available' if payload['target_anomaly_available'] else 'skipped'}.",
         ]
@@ -1616,7 +1623,7 @@ def run(config: Dict[str, Any]) -> Dict[str, Any]:
         'target_labeled_report_path': str(target_labeled_files[1]),
         'target_labeled_report': target_labeled_report,
         'target_anomaly_available': bool(target_anomalies),
-        'skipped_metrics': [] if target_anomalies else ['precision', 'recall', 'f1', 'anomaly_f1', 'auroc', 'auprc'],
+        'skipped_metrics': [] if target_anomalies else ['precision', 'recall', 'f1', 'anomaly_f1', 'fnr', 'auroc', 'auprc'],
         'synthetic_filter_reports': {
             'raw': filter_report(raw_payload),
             'tof_selected': filter_report(best_tof_payload),
@@ -1650,7 +1657,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     print('Wrote {}'.format(resolve_path(config['paths']['output_json'])))
     print('source_context={} target_context={}'.format(payload['source_context'], payload['target_context']))
     if not payload['target_anomaly_available']:
-        print('Target anomaly data not found; anomaly_f1/AUROC/AUPRC skipped.')
+        print('Target anomaly data not found; anomaly_f1/FNR/AUROC/AUPRC skipped.')
     return 0
 
 

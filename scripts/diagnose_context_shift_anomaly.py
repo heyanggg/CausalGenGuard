@@ -130,6 +130,7 @@ def metrics_from_scores(normal_scores: Sequence[float], anomaly_scores: Sequence
             'precision': None,
             'recall': None,
             'f1': None,
+            'fnr': None,
             'auroc': None,
             'auprc': None,
         }
@@ -141,6 +142,7 @@ def metrics_from_scores(normal_scores: Sequence[float], anomaly_scores: Sequence
         'precision': clean_float(metrics.get('precision')),
         'recall': clean_float(metrics.get('recall')),
         'f1': clean_float(metrics.get('f1')),
+        'fnr': clean_float(metrics.get('fnr')),
         'auroc': clean_float(metrics.get('auroc')),
         'auprc': clean_float(metrics.get('auprc')),
     }
@@ -435,6 +437,7 @@ def per_anomaly_rows(
                     'precision': metrics['precision'],
                     'recall': metrics['recall'],
                     'f1': metrics['f1'],
+                    'fnr': metrics['fnr'],
                     'auroc': metrics['auroc'],
                     'auprc': metrics['auprc'],
                     'mean_score_normal': mean_normal,
@@ -465,6 +468,7 @@ def threshold_sweep_rows(scored: Dict[str, Dict[str, Any]]) -> List[Dict[str, An
                     'precision': metrics['precision'],
                     'recall': metrics['recall'],
                     'f1': metrics['f1'],
+                    'fnr': metrics['fnr'],
                     'auroc': metrics['auroc'],
                     'auprc': metrics['auprc'],
                 }
@@ -551,6 +555,7 @@ def balanced_rows(
             'precision': metrics['precision'],
             'recall': metrics['recall'],
             'f1': metrics['f1'],
+            'fnr': metrics['fnr'],
             'auroc': metrics['auroc'],
             'auprc': metrics['auprc'],
             'kept_count': artifact['row'].get('kept_count', 0),
@@ -690,18 +695,19 @@ def write_report(
         '',
         '## Overall Metrics',
         '',
-        '| method | filter_strategy | target_normal_fpr | precision | recall | f1 | auroc | auprc | kept_count | rejected_count | adaptation_gain |',
-        '| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
+        '| method | filter_strategy | target_normal_fpr | precision | recall | f1 | fnr | auroc | auprc | kept_count | rejected_count | adaptation_gain |',
+        '| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
     ]
     for row in overall_rows:
         lines.append(
-            '| {method} | {strategy} | {fpr} | {p} | {r} | {f1} | {auroc} | {auprc} | {kept} | {rejected} | {gain} |'.format(
+            '| {method} | {strategy} | {fpr} | {p} | {r} | {f1} | {fnr} | {auroc} | {auprc} | {kept} | {rejected} | {gain} |'.format(
                 method=row['method'],
                 strategy=row.get('filter_strategy', ''),
                 fpr=final.format_metric(row.get('target_normal_fpr')),
                 p=final.format_metric(row.get('precision')),
                 r=final.format_metric(row.get('recall')),
                 f1=final.format_metric(row.get('f1')),
+                fnr=final.format_metric(row.get('fnr')),
                 auroc=final.format_metric(row.get('auroc')),
                 auprc=final.format_metric(row.get('auprc')),
                 kept=row.get('kept_count', 0),
@@ -720,18 +726,19 @@ def write_report(
             f"- take_per_type: `{balanced_report.get('take_per_type')}`",
             f"- low_support: `{balanced_report.get('low_support')}`",
             '',
-            '| method | target_normal_fpr | precision | recall | f1 | auroc | auprc |',
-            '| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
+            '| method | target_normal_fpr | precision | recall | f1 | fnr | auroc | auprc |',
+            '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
         ]
     )
     for row in balanced_eval_rows:
         lines.append(
-            '| {method} | {fpr} | {p} | {r} | {f1} | {auroc} | {auprc} |'.format(
+            '| {method} | {fpr} | {p} | {r} | {f1} | {fnr} | {auroc} | {auprc} |'.format(
                 method=row['method'],
                 fpr=final.format_metric(row.get('target_normal_fpr')),
                 p=final.format_metric(row.get('precision')),
                 r=final.format_metric(row.get('recall')),
                 f1=final.format_metric(row.get('f1')),
+                fnr=final.format_metric(row.get('fnr')),
                 auroc=final.format_metric(row.get('auroc')),
                 auprc=final.format_metric(row.get('auprc')),
             )
@@ -808,6 +815,7 @@ def run(config_path: Path) -> Dict[str, Any]:
             'precision',
             'recall',
             'f1',
+            'fnr',
             'auroc',
             'auprc',
             'mean_score_normal',
@@ -827,7 +835,7 @@ def run(config_path: Path) -> Dict[str, Any]:
     write_csv(
         threshold_csv,
         threshold_rows,
-        ['method', 'filter_strategy', 'quantile', 'threshold', 'target_normal_fpr', 'precision', 'recall', 'f1', 'auroc', 'auprc'],
+        ['method', 'filter_strategy', 'quantile', 'threshold', 'target_normal_fpr', 'precision', 'recall', 'f1', 'fnr', 'auroc', 'auprc'],
     )
     write_csv(
         balanced_csv,
@@ -841,6 +849,7 @@ def run(config_path: Path) -> Dict[str, Any]:
             'precision',
             'recall',
             'f1',
+            'fnr',
             'auroc',
             'auprc',
             'kept_count',

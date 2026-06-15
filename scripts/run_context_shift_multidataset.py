@@ -55,6 +55,7 @@ SUMMARY_FIELDS = [
     'precision',
     'recall',
     'f1',
+    'fnr',
     'auroc',
     'auprc',
     'adaptation_gain',
@@ -166,6 +167,7 @@ def missing_rows(
             'precision': None,
             'recall': None,
             'f1': None,
+            'fnr': None,
             'auroc': None,
             'auprc': None,
             'adaptation_gain': None,
@@ -454,6 +456,7 @@ def summary_rows_from_artifacts(
                 'precision': row.get('precision'),
                 'recall': row.get('recall'),
                 'f1': f1_value,
+                'fnr': row.get('fnr'),
                 'auroc': row.get('auroc'),
                 'auprc': row.get('auprc'),
                 'adaptation_gain': adaptation_gain,
@@ -504,6 +507,7 @@ def write_dataset_outputs(
             'precision',
             'recall',
             'f1',
+            'fnr',
             'auroc',
             'auprc',
             'mean_score_normal',
@@ -514,7 +518,7 @@ def write_dataset_outputs(
     write_csv(
         output_dir / f'{dataset}_{transition}_threshold_sweep.csv',
         threshold_rows,
-        ['method', 'filter_strategy', 'quantile', 'threshold', 'target_normal_fpr', 'precision', 'recall', 'f1', 'auroc', 'auprc'],
+        ['method', 'filter_strategy', 'quantile', 'threshold', 'target_normal_fpr', 'precision', 'recall', 'f1', 'fnr', 'auroc', 'auprc'],
     )
 
 
@@ -525,12 +529,12 @@ def write_missing_outputs(dataset: str, transition: str, output_dir: Path, rows:
     write_csv(
         output_dir / f'{dataset}_{transition}_per_anomaly.csv',
         [],
-        ['method', 'filter_strategy', 'anomaly_type', 'anomaly_count', 'low_support', 'precision', 'recall', 'f1', 'auroc', 'auprc', 'mean_score_normal', 'mean_score_anomaly', 'score_margin'],
+        ['method', 'filter_strategy', 'anomaly_type', 'anomaly_count', 'low_support', 'precision', 'recall', 'f1', 'fnr', 'auroc', 'auprc', 'mean_score_normal', 'mean_score_anomaly', 'score_margin'],
     )
     write_csv(
         output_dir / f'{dataset}_{transition}_threshold_sweep.csv',
         [],
-        ['method', 'filter_strategy', 'quantile', 'threshold', 'target_normal_fpr', 'precision', 'recall', 'f1', 'auroc', 'auprc'],
+        ['method', 'filter_strategy', 'quantile', 'threshold', 'target_normal_fpr', 'precision', 'recall', 'f1', 'fnr', 'auroc', 'auprc'],
     )
 
 
@@ -681,12 +685,12 @@ def write_report(path: Path, summary_rows: List[Dict[str, Any]], details: List[D
         '',
         '## Average Metrics On Successful Runs',
         '',
-        '| method | avg_target_normal_fpr | avg_f1 | avg_balanced_f1 |',
-        '| --- | ---: | ---: | ---: |',
+        '| method | avg_target_normal_fpr | avg_f1 | avg_fnr | avg_balanced_f1 |',
+        '| --- | ---: | ---: | ---: | ---: |',
     ]
     for method in METHODS:
         lines.append(
-            f"| {method} | {final.format_metric(avg_fpr.get(method))} | {final.format_metric(method_average(success_rows, method, 'f1'))} | {final.format_metric(avg_balanced_f1.get(method))} |"
+            f"| {method} | {final.format_metric(avg_fpr.get(method))} | {final.format_metric(method_average(success_rows, method, 'f1'))} | {final.format_metric(method_average(success_rows, method, 'fnr'))} | {final.format_metric(avg_balanced_f1.get(method))} |"
         )
 
     lines.extend(
